@@ -1,3 +1,3 @@
 # ReversibleLogicCircuit
 
-Typing test
+Branching test
