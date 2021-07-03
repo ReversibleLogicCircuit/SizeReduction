@@ -1,19 +1,17 @@
-#-*- coding:utf-8 -*-
 from itertools import combinations
 import copy
-#################################################################################
 
 # gate example
 # X1 = [n-1, []]
 # C21 = [n-1, [[n-2,1]]], C2n1 = [n-1, [[n-2,0]]]
 def apply_gate(n, sbox, gate):
     result = copy.deepcopy(sbox)
-    pos = [[n-gate[0]-1, '-']] # -1을 해서 index에 맞도록
+    pos = [[n-gate[0]-1, '-']] # by decreasing one, it matches
     for i in range(len(gate[1])):
-        pos.append([n-gate[1][i][0]-1, str(gate[1][i][1])]) # -1을 해서 index에 맞도록
+        pos.append([n-gate[1][i][0]-1, str(gate[1][i][1])])
     pos = sorted(pos, key=lambda fun: fun[0])
     for i in range(1,len(pos),1):
-        pos[i][0] -= i  # 위치 조정
+        pos[i][0] -= i  # adjusting a postion
     num = n - len(pos)
     
     for i in range(1 << num):
@@ -33,36 +31,6 @@ def apply_gate(n, sbox, gate):
     
     return result
 
-#################################################################################
-
-def gate_check(n, cons, gate):
-    for con in cons:
-        # 일단 현재 con과 겹치는게 있을거라고 생각
-        flagNowNonActive = True
-        
-        # 조건을 확인 해보기 (안될경우 바로 False로 break)
-        for eachCons in gate[1]:
-            if (con[n-eachCons[0]-1] != '-') and (con[n-eachCons[0]-1] != str(eachCons[1])):
-                # gate의 조건이 현재 cons의 con과 비교하였을때 non-active인 경우
-                # 해당 con은 더 이상 신경 쓰지 않아도 됨
-                flagNowNonActive = False
-                break
-                
-        # 조건 만족시 괜찮은 gate인지 확인
-        if flagNowNonActive and (0 in [e[0] for e in gate[1]]):
-            # gate가 현재 con과 만족하고
-            # gate 조건 중 마지막 비트가 있었으면
-            # 해당 gate는 적용 하면 안되는 거라고(False) 반환
-            return False
-
-        if flagNowNonActive and (con[n-gate[0]-1] != '-'):
-            # 해당 게이트로 앞의 조건의 위치는 바뀌지 않았으면 좋겠음
-            # 게이트가 앞의 조건의 위치를 바꿀 경우
-            # 해당 gate는 적용하면 안되는 거라고(False) 반환
-            return False
-        
-    return True
-
 def gate_to_index(n, gate, index):
     strIndex = bin((1<<n) + index)[3:]
     flagActive = True
@@ -76,34 +44,27 @@ def gate_to_index(n, gate, index):
         return index ^ (1<<(gate[0]))
     else:
         return index
-    
-# 열 정보 두 개를 입력받아 조건을 확인하며 block으로 만드는 함수
-# 입력
-# n: bit 수
-# index1, index2: balanced를 만들고 싶은 두 숫자
-# cons: conditions
-# 출력
-# gate의 list를 반환
+
 def makeBlock_subroutine(n, index1, index2, cons):
     gates = []
     nextPos = next_position(n, cons)
     rightPos = int(nextPos[:-1],2)
     strStartDiff = bin((1<<n) + index1 ^ index2)[3:]
-    # 왼쪽으로 모이게 하기 위해서 index2가 큰 값으로 만듦
+    # guaranting index1 < index2
     if index2 < index1:
         temp = index2
         index2 = index1
         index1 = temp
     
-    # 이미 block인 입력이 들어왔을 경우
+    # already block case
     if strStartDiff[:-1].count('1') == 0:
         return gates
     
-    # 1단계, parity 조정
+    # step 1. correcting a parity
     if strStartDiff[-1] == '0':
         intCon = strStartDiff[:-1].index('1') + 1
         intTar = n
-        # 아래는 parity를 Even 상태로 항상 만들기 위한 것
+        # making two rows is at normal position(for intterrupgint rows, normal-like position)
         if bin((1<<n) + index2)[3:][-1] == '0':
             gate = [n-intTar, [[n-intCon,int(bin((1<<n) + index2)[3:][intCon-1])]]]
         else:
@@ -113,11 +74,11 @@ def makeBlock_subroutine(n, index1, index2, cons):
         index1 = gate_to_index(n, gate, index1)
         index2 = gate_to_index(n, gate, index2)
 
-    # 2단계, 한 비트만 다르게 만들기
+    # step 2. making different only two bit(including last bit)
     strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
     intCon = strNowDiff.index('1') + 1
 
-    # 2-1단계, 첫 위치 값에 따라서 X 게이트 적용
+    # step 2-1. applying X gate depends on i
     if nextPos[intCon - 1] == '1':
         gate = [n-intCon, []]
         gates.append(gate)
@@ -125,7 +86,7 @@ def makeBlock_subroutine(n, index1, index2, cons):
         index1 = gate_to_index(n, gate, index1)
         index2 = gate_to_index(n, gate, index2)
 
-    # 2-2단계, 첫 위치를 타겟으로 바꾸기
+    # step 2-2. applying CX gate whose conrol bit is first different bit
     for i in range(strStartDiff[:-1].count('1') - 1):
         strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
         intTar = strNowDiff.index('1',intCon) + 1
@@ -135,7 +96,7 @@ def makeBlock_subroutine(n, index1, index2, cons):
         index1 = gate_to_index(n, gate, index1)
         index2 = gate_to_index(n, gate, index2)
 
-    # 2-3단계, 첫 위치 값에 따라서 X 게이트 적용(다시)
+    # step 2-3. applying X gate depends on i(repeating)
     if nextPos[intCon - 1] == '1':
         gate = [n-intCon, []]
         gates.append(gate)
@@ -143,10 +104,9 @@ def makeBlock_subroutine(n, index1, index2, cons):
         index1 = gate_to_index(n, gate, index1)
         index2 = gate_to_index(n, gate, index2)
     
+    # step 3-1. applying C^{m}X gate (m = 1, ...)
     strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
-    # 3단계-1, 맨 처음은 CN으로 적용
     if len(cons) == 0 and strNowDiff.count('1') == 1:
-        # 맨 처음용 CN으로 해결하기
         intTar = strNowDiff.index('1') + 1
         intCon = n        
         gate = [n-intTar, [[n-intCon, 1]]]        
@@ -154,27 +114,21 @@ def makeBlock_subroutine(n, index1, index2, cons):
     else:
         intTar = strNowDiff.index('1') + 1
         
-        # nexPos와 다른 위치 구하기
-        strCheckDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:] + '1' # 마지막1은 1이 없는거에대한 방지용
+        strCheckDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:] + '1' # last '1' is against empty case.
         end = strCheckDiff.index('1') + 1
         
-        # 조건 구하기
         consList = [i+1 for i in range(0, end, 1) if nextPos[i] == '1']
         
-        # 게이트 만들기
+        # generating proper gate
         gate = [n-intTar, []]
         for c in consList:
             gate[1].append([n-c,1])
-        #if end != n and nextPos.count('1') > len(consList):
         if nextPos.count('1') > len(consList):
-            # 해당 게이트는 만들어진 조건의 개수가 더 적을 수 있는 경우
             gate[1].append([n-end, (index1 >> (n-end)) & 0x01])
         gate[1].append([n-n, index2 & 0x01])
         gates.append(gate)
     
     return gates
-
-#################################################################################
 
 def conditions_and(n, cons):
     result = ''
@@ -190,26 +144,6 @@ def conditions_and(n, cons):
         else:
             result = result + '0'
     return result
-
-# recursive 하게 사용되기 위해서는
-# sbox가 낮은 level로 들어올때 sbox[16:]과 같이 들어와야 할 듯
-def take_two_rows(n, cons, number_list, sbox):
-    # 기준 생성
-    strCondsAnd = conditions_and(n, cons)
-    temp = 1
-    intMinRow = 0
-    for i in range(len(strCondsAnd)-1,-1,-1):
-        if strCondsAnd[i] == '-':
-            intMinRow += temp
-        temp = temp << 1
-    
-    for i in range(0,len(number_list),2):
-        if sbox.index(number_list[i]) > intMinRow and sbox.index(number_list[i+1]) > intMinRow:
-            return (number_list[i], number_list[i+1])
-    
-    print("그런 쌍 없음 Error")
-    
-#################################################################################
 
 def check_block(n, cons, number_list, sbox):
     result = []
@@ -237,7 +171,6 @@ def cons_update(n, cons):
     result = [c for c in cons]
     
     while len(result) > 1 and result[-1].count('-') == result[-2].count('-'):
-        # 현재 cons에 두 개 이상의 조건이 있고, 그 조건의 '-'의 개수가 같은 경우 합칠 수 있음
         c1 = result.pop()
         c2 = result.pop()
         
@@ -247,8 +180,7 @@ def cons_update(n, cons):
     
     return result
 
-def cons_back(n, cons):
-    # 되돌아가기 기능에 필요한 cons를 되돌리는 함수    
+def cons_back(n, cons):    
     result = [c for c in cons]
     
     while result[-1].count('-') != 1:
@@ -259,22 +191,20 @@ def cons_back(n, cons):
     
     return result[:-1]
 
-#################################################################################
 def makeLeft(n, index1, index2, cons):
-    # index2는 사실 필요 없음
+    # index2 is not used
     gates = []
     nextPos = next_position(n, cons)
     rightPos = int(nextPos[:-1],2)
     strStartDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
     
-    # n = 2인 상황에서 바꾸는 것은 X1로 해결
     if n == 2 and strStartDiff.count('1') == 1:
         gate = [n-1, []]
         gates.append(gate)
         
         return gates
     
-    # 1단계, strStartDiff.count('1')  == 1로 만들기
+    # step 1. making different only one bit
     for i in range(strStartDiff.count('1') - 1):
         strNowDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
         
@@ -291,17 +221,12 @@ def makeLeft(n, index1, index2, cons):
         gates.append(gate)
         index1 = gate_to_index(n, gate, index1)
             
-    # 2단계, 마지막 다른 하나를 바꾸기
+    # step 2. applying proper C^{m}X gate (m = 1, ...)
     strNowDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
     if strNowDiff.count('1') == 1:
         intTar = strNowDiff.index('1') + 1
         
         consList = [intTar + i + 1 for i in range(len(nextPos[intTar:])) if nextPos[intTar:][i] == '1']
-        #print(consList)
-        
-        #print(nextPos, nextPos[intTar:])
-        #print(bin((1<<n) + index1)[3:])
-        #print(bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:])
         
         gate = [n-intTar, []]
         for con in consList:
@@ -311,18 +236,12 @@ def makeLeft(n, index1, index2, cons):
     
     return gates
 
-#################################################################################
-
 def parity_check(n, cons, gate):
     for con in cons:
-        # 일단 현재 con과 겹치는게 있을거라고 생각
         flagNowNonActive = True
         
-        # 조건을 확인 해보기 (안될경우 바로 False로 break)
         for eachCons in gate[1]:
             if (con[n-eachCons[0]-1] != '-') and (con[n-eachCons[0]-1] != str(eachCons[1])):
-                # gate의 조건이 현재 cons의 con과 비교하였을때 non-active인 경우
-                # 해당 con은 더 이상 신경 쓰지 않아도 됨
                 flagNowNonActive = False
         
         if flagNowNonActive:
@@ -369,7 +288,6 @@ def writeRealFormat(n, gates, fname):
         fp.write(".garbage " + "-" * n + "\n")
         fp.write(".begin\n")
         
-        # 쓰기 시작
         for i in range(0, len(gates[:-1]), 3):
             # non- interrupting 
             for gate in gates[i]:
@@ -399,6 +317,5 @@ def writeRealFormat(n, gates, fname):
                 strGates = writeGate(n, gate)
                 for gate in strGates:
                     fp.write(gate + "\n")
-        # 쓰기 끝
         
         fp.write(".end")
