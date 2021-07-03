@@ -6,7 +6,7 @@ from utils import *
 def writeRealFormat_for_URF5(n, gates, fname):
     with open(fname, "w") as fp:
         fp.write(".version 2.0\n")
-        fp.write(",numvars {}\n".format(n))
+        fp.write(",.numvars {}\n".format(n))
         temp = ".variables "
         for i in range(n):
             temp += "x{} ".format(i+1)
@@ -23,7 +23,7 @@ def writeRealFormat_for_URF5(n, gates, fname):
         fp.write(".garbage " + "-" * n + "\n")
         fp.write(".begin\n")
 
-        for j in range(0, len(gates[0]), 2):
+        for i in range(0, len(gates[0]), 2):
             for gate in gates[0][i]:
                 strGates = writeGate(n, gate)
                 for gate in strGates:
