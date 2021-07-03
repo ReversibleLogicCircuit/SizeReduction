@@ -1,5 +1,6 @@
 import random
 
+# below function gives a random n-bit permutation
 def rand_sbox(n):
     nLen = 1 << n
     nList = list(range(nLen))
