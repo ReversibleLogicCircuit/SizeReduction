@@ -34,16 +34,15 @@ def parityOfSbox(n, sbox):
     else:
         return False
 
-#################################################
 def makeBlock(n, now_n, sbox, cons, nList, now_rows):
     result = []
 
-    # blcok 만들기
+    # constructing a block
     gates = makeBlock_subroutine(now_n, sbox[-(1 << now_n):].index(now_rows[0]), sbox[-(1 << now_n):].index(now_rows[1]), cons)
     # gate 변환
     if now_n != n and gates != []:
         for j in range(n - now_n):
-            gates[-1][1].append([n - 1 - j,1]) # gate 바꾸기
+            gates[-1][1].append([n - 1 - j,1]) # adjusting to appropriate gate
     result.append(gates)
     costGB = 0
     for j in range(len(gates)):
@@ -51,7 +50,7 @@ def makeBlock(n, now_n, sbox, cons, nList, now_rows):
         if len(gates[j][1]) > 1:
             costGB += 2 * len(gates[j][1]) - 3
 
-    # blcok 위치 수정
+    # allocating a block
     gates = makeLeft(now_n, sbox[-(1 << now_n):].index(now_rows[0]), sbox[-(1 << now_n):].index(now_rows[1]), cons)
     result.append(gates)
     costAL = 0
@@ -69,10 +68,10 @@ def makeBlock(n, now_n, sbox, cons, nList, now_rows):
 
     return result, [costGB, costAL], sbox, cons, nList
 
-# 맞춰지는 블록의 개수가 2의 거듭제곱을 넘는 순가
-# 실제로 다루어야할 실제 크기가 줄어드는데, 그거에 맞게 사용해서 시간복잡도를 줄이기 위한 용도
+# when the number of allocated blocks are bigger than some square of two, it is possible to reduce the size of bit.
+# In that case, below function is used rather than makeBlock().
 def makeBlock_semi(n, now_n, sbox, cons, nList, now_rows):
-    # blcok 만들기
+    # constructing a block
     gates = makeBlock_subroutine(now_n, sbox.index(now_rows[0]), sbox.index(now_rows[1]), cons)
     costGB = 0
     if now_n != n and gates != []:
@@ -80,16 +79,16 @@ def makeBlock_semi(n, now_n, sbox, cons, nList, now_rows):
             sbox = apply_gate(now_n, sbox, gates[j])
             if len(gates[j][1]) > 1:
                 costGB += 2 * len(gates[j][1]) - 3
-        # 마지막 게이트는 따로 카운트
+        # the last gate is counted.
         sbox = apply_gate(now_n, sbox, gates[-1])
-        costGB += 2 * (len(gates[-1][1]) + n - now_n) - 3 # 게이트비용 조정
+        costGB += 2 * (len(gates[-1][1]) + n - now_n) - 3 # adjusting quality of last gate
     else:
         for j in range(0, len(gates), 1):
             sbox = apply_gate(now_n, sbox, gates[j])
             if len(gates[j][1]) > 1:
                 costGB += 2 * len(gates[j][1]) - 3
 
-    # blcok 위치 수정
+    # allocating a block
     gates = makeLeft(now_n, sbox.index(now_rows[0]), sbox.index(now_rows[1]), cons)
     costAL = 0
     for j in range(len(gates)):
@@ -107,15 +106,16 @@ def makeBlock_semi(n, now_n, sbox, cons, nList, now_rows):
     return [costGB, costAL], sbox, cons, nList
 
 def choose(n, options):
-    tempOps = sorted(options, key=lambda fun: fun[2], reverse=True)      # 해당 비용안에서 FB순으로 정렬 (Full로 들어와서 [2] 항목에 FB 개수만 있음)
-    for di in range(len(tempOps[0][1]), 0, -1):                          # 앞쪽부터 FB가 있는 것 부터 사용하도록
+    # sorting a options and returning a one of the best options
+    tempOps = sorted(options, key=lambda fun: fun[2], reverse=True)      # sorting the number of free block
+    for di in range(len(tempOps[0][1]), 0, -1):                          # sorting for one with free block used first
         tempOps = sorted(tempOps, key=lambda fun: fun[1][di-1])
-    tempOps = sorted(tempOps, key=lambda fun: sum(fun[1]))               # 해당 비용으로 정렬 -> 비용순으로 작은비용으로 정렬되며, 그 순서는 FB가 큰 순서임
+    tempOps = sorted(tempOps, key=lambda fun: sum(fun[1]))               # sorting the qualities
 
     return tempOps[0][0]
 
-# 깊이전수조사용 (재귀함수를 이용한, 깊이우선 탐색)
-# nowQuality와 BestQuality는 depth만큼 길이가 정의되어 있어야 됨
+# depth exhaustive search (using recursive function)
+# nowQuality and BestQuality must be defiend as length is depth
 # ex) d=3, nowQuality = [10, 10, 10], bestQuality = [10, 10, 10]
 def depthExhasutive(n, now_n, sbox, cons, nList, nowQuality, bestQuality, now_d, d):
     if now_d == d:
@@ -135,14 +135,14 @@ def depthExhasutive(n, now_n, sbox, cons, nList, nowQuality, bestQuality, now_d,
             if tempCons[0] == '0' + '-' * (tNow_n - 1) and tNow_n > 2:
                 tempCons = []
                 tNow_n -= 1
-                tempSbox = tempSbox[-(1 << tNow_n):] # now_n 수준으로 줄이기
+                tempSbox = tempSbox[-(1 << tNow_n):] # reducing permutation to now_n bit
             
             depthExhasutive(n, tNow_n, tempSbox, tempCons, tempNList, nowQuality, bestQuality, now_d + 1, d)
 
 # ex) d=3, nowQuality = [[10, 10, 10], [...]], bestQuality = [[10, 10, 10], [...]]
 def depthExhasutive2(n, now_n, sbox, cons, nList, nowQuality, bestQuality, bestBackupQuality, now_d, d):
     if now_d == d:
-        # depthExhasutive2는 그 사용방법상 여기까지 올 경우 3비트 sbox가 되어 있음
+        # depthExhasutive2 is only used to arrive here only when sbox is 3-bit
         FB_List = check_block_changed(3, [], nList, sbox)
 
         if sum(nowQuality[0]) == sum(bestQuality[0]) and nowQuality[0] < bestQuality[0] and FB_List[1] == []:
@@ -173,39 +173,37 @@ def depthExhasutive2(n, now_n, sbox, cons, nList, nowQuality, bestQuality, bestB
             if tempCons[0] == '0' + '-' * (tNow_n - 1) and tNow_n > 2:
                 tempCons = []
                 tNow_n -= 1
-                tempSbox = tempSbox[-(1 << tNow_n):] # now_n 수준으로 줄이기
+                tempSbox = tempSbox[-(1 << tNow_n):] # reducing permutation to now_n bit
             
             depthExhasutive2(n, tNow_n, tempSbox, tempCons, tempNList, nowQuality, bestQuality, bestBackupQuality, now_d + 1, d)
 
 # default - Full block
 def makeList_Full(n, now_n, sbox, cons, nList, depth):
     options = []
-    sbox = sbox[-(1 << now_n):] # now_n 수준으로 줄이기
+    sbox = sbox[-(1 << now_n):] # reducing permutation to now_n bit
     for i in range(0, len(nList), 2):
         nownow_n = copy.deepcopy(now_n)
 
         option = [[nList[i], nList[i + 1]], [], []]
 
-        # 실제 선택된 block을 뭉쳐 시작하기
-        #tempGates, tempCosts, tempSbox, tempCons, tempNList = makeBlock(n, nownow_n, sbox, cons, nList, [nList[i], nList[i + 1]])
+        # constructing a block with makeBlock_semi() function
+        # the process is done after the block is really constructed.
         tempCosts, tempSbox, tempCons, tempNList = makeBlock_semi(n, nownow_n, sbox, cons, nList, [nList[i], nList[i + 1]])
 
         if tempCons[0] == '0' + '-' * (nownow_n - 1) and nownow_n > 2:
             tempCons = []
             nownow_n -= 1
-            tempSbox = tempSbox[-(1 << nownow_n):] # now_n 수준으로 줄이기
-
-        # 정보 채우기
+            tempSbox = tempSbox[-(1 << nownow_n):] # reducing permutation to now_n bit
+            
         option[1].append(sum(tempCosts))
         FB_list = check_block_changed(nownow_n, tempCons, tempNList, tempSbox)
-        option[2] = max([len(FB_list[0]) >> 1,len(FB_list[1]) >> 1])    # Full block 이므로 max로 처리
-
-        # depth가 없을 경우 처리
+        option[2] = max([len(FB_list[0]) >> 1,len(FB_list[1]) >> 1])    # In Full case, max is fine.
+        
         if depth == 0:
             options.append(option)
             continue
 
-        # 깊이 전수조사 시작
+        # Stating depth exhaustive search
         tDepth = depth
         if depth > (len(tempNList) >> 1):
             tDepth = len(tempNList) >> 1
@@ -215,7 +213,6 @@ def makeList_Full(n, now_n, sbox, cons, nList, depth):
 
         depthExhasutive(n, nownow_n, tempSbox, tempCons, tempNList, nowQuality, bestQuality, 0, tDepth)
 
-        # 깊이-전수조사로 얻은 최고의 결과를 반영해서 option에 입력
         option[1] = option[1] + bestQuality
         options.append(option)
 
@@ -223,35 +220,34 @@ def makeList_Full(n, now_n, sbox, cons, nList, depth):
 
 def makeList2_Full(n, now_n, sbox, cons, nList, oddFlag, depth):
     options = []
-    sbox = sbox[-(1 << now_n):] # now_n 수준으로 줄이기
+    sbox = sbox[-(1 << now_n):] # reducing permutation to now_n bit
     for i in range(0, len(nList), 2):
         nownow_n = copy.deepcopy(now_n)
         toddFlag = copy.deepcopy(oddFlag)
 
         option = [[nList[i], nList[i + 1]], [], [], []]
 
-        # 실제 선택된 block을 뭉쳐 시작하기
-        #tempGates, tempCosts, tempSbox, tempCons, tempNList = makeBlock(n, nownow_n, sbox, cons, nList, [nList[i], nList[i + 1]])
+        # constructing a block with makeBlock_semi() function
+        # the process is done after the block is really constructed.
         tempCosts, tempSbox, tempCons, tempNList = makeBlock_semi(n, nownow_n, sbox, cons, nList, [nList[i], nList[i + 1]])
 
         if tempCons[0] == '0' + '-' * (nownow_n - 1) and nownow_n > 2:
             tempCons = []
             nownow_n -= 1
-            tempSbox = tempSbox[-(1 << nownow_n):] # now_n 수준으로 줄이기
+            tempSbox = tempSbox[-(1 << nownow_n):] # reducing permutation to now_n bit
             if tempCosts[0] == 2 * (n-1) - 3:
                 toddFlag = False if toddFlag else True
 
         # 정보 채우기
         option[1].append(sum(tempCosts))
         FB_list = check_block_changed(nownow_n, tempCons, tempNList, tempSbox)
-        option[2] = max([len(FB_list[0]) >> 1,len(FB_list[1]) >> 1]) # Full block이므로 Max로 처리
+        option[2] = max([len(FB_list[0]) >> 1,len(FB_list[1]) >> 1]) # In Full case, max is fine.
 
-        # depth가 없을 경우 처리
         if depth == 0:
             options.append(option)
             continue
 
-        # 깊이 전수조사 시작
+        # Stating depth exhaustive search
         tDepth = depth
         if depth > (len(tempNList) >> 1):
             tDepth = len(tempNList) >> 1
@@ -262,13 +258,13 @@ def makeList2_Full(n, now_n, sbox, cons, nList, oddFlag, depth):
 
         depthExhasutive2(n, nownow_n, tempSbox, tempCons, tempNList, nowQuality, bestQuality, bestBackupQuality, 0, tDepth)
 
-        # 깊이-전수조사로 얻은 최고의 결과를 반영해서 option에 입력
+        # updating the result with best one
         if 10000 not in bestQuality[0]:
             option[1] = option[1] + bestQuality[0]
             option[3] = bestQuality[1]
             options.append(option)
 
-            # 마지막 3개 예상
+            # it can predict last four block's quality, because of the feature.
             if toddFlag and option[1][-1] != 2 * (n-1) - 3:
                 option[1] += [2 * (n-1) - 5, 0, 2 * (n-1) - 3, 0]
             else:
@@ -288,30 +284,28 @@ def decompse_Full(n, sbox, parDepth):
     
     now_n = n
     while now_n > 1:
-        # 현재 상태에서 조건 설정
+        # setting a conditions
         cons = []
-        numMadeBlock = 0    # 매 단계마다 1개의 블록을 만들기 때문에 넘치는 상황을 고려하지 않아도 됨
+        numMadeBlock = 0    # every block is constructed, numMadeBlock increase by one.
 
-        # 마지막 오른쪽에서 8번째 블록부터는 depth = 3으로 전수조사
-        # 이 if 문은 n=5 인경우에만 동작 (왜냐면 n > 5이면 밑에과정중에서 완료 됨)
+        # When constructing a last 8-th block, 3 depth exhaustive searh is done for finding a feature.
         if now_n == 4:
             oddFlag = parityOfSbox(n, tSbox)
             options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 3)
             options = sorted(options, key=lambda fun: sum(fun[1]))
 
-            # 위의 4개의 블록(현재 + depth 3)에 대해서 뭉침
+            # results from exhaustive search is applied.
             for now_rows in [options[0][0]] + options[0][3]:
                 result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
-                resultGates += result   # 결과물 게이트 반영
-                numMadeBlock += 1 # 사실 필요 없음
+                resultGates += result
+                numMadeBlock += 1
 
-            # 4비트 끝
+            # 4-bit is decomposed.
             now_n -= 1
             continue
 
-        # now_n에 맞는 블록 만들기 시작
         while numMadeBlock < (1 << (now_n - 2)):
-            now_parDepth = parDepth[n - now_n]  # now_n에 따라 다른 depth
+            now_parDepth = parDepth[n - now_n]  # setting a depth for now_n
 
             # MAKELIST()
             options = makeList_Full(n, now_n, tSbox, cons, nList, now_parDepth)
@@ -319,43 +313,41 @@ def decompse_Full(n, sbox, parDepth):
             # CHOOSE()
             now_rows = choose(n, options)
 
-            # 실제 뭉치고, 반영
+            # constructing and allocating a block
             result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
             resultGates += result   # 결과물 게이트 반영
 
-            # block 개수 하나 만든것을 명시
             numMadeBlock += 1
 
-            # 마지막 오른쪽에서 9번째 블록부터는 depth = 4로 전수조사 하도록 탈출
+            # break for depth exhaustive searh is done for finding a feature.
             if now_n == 5 and numMadeBlock == 7:
                 break
 
-        # 마지막 오른쪽에서 9번째 블록부터는 depth = 4로 전수조사
+        # When constructing a last 9-th block, 4 depth exhaustive searh is done for finding a feature.
         if now_n == 5 and numMadeBlock == 7:
             oddFlag = parityOfSbox(n, tSbox)
             options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 4)
             options = sorted(options, key=lambda fun: sum(fun[1]))
 
-            # now_n = 5 수준) 오른쪽에서 9번째 블록 뭉침
+            # results from exhaustive search is applied.
             result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, options[0][0])
-            resultGates += result   # 결과물 게이트 반영
+            resultGates += result
 
-            # now_n = 5 수준 정리
+            # after last 9-th block is constructed and allocated, now_n is reduced by one.
             cons = []
             now_n -= 1
-            numMadeBlock = 0 # 사실 필요 없음
+            numMadeBlock = 0
 
-            # now_n == 4 수준에서 뭉침
             for now_rows in options[0][3]:
                 result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
-                resultGates += result   # 결과물 게이트 반영
-                numMadeBlock += 1 # 사실 필요 없음
+                resultGates += result
+                numMadeBlock += 1
 
-            # 4비트 끝
+            # 4-bit is decomposed.
             now_n -= 1
             continue
         
-        # 비트 하나 줄이기
+        # reducing a bit
         now_n -= 1
 
     return resultGates
