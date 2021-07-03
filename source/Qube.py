@@ -39,7 +39,6 @@ def makeBlock(n, now_n, sbox, cons, nList, now_rows):
 
     # constructing a block
     gates = makeBlock_subroutine(now_n, sbox[-(1 << now_n):].index(now_rows[0]), sbox[-(1 << now_n):].index(now_rows[1]), cons)
-    # gate 변환
     if now_n != n and gates != []:
         for j in range(n - now_n):
             gates[-1][1].append([n - 1 - j,1]) # adjusting to appropriate gate
@@ -238,7 +237,6 @@ def makeList2_Full(n, now_n, sbox, cons, nList, oddFlag, depth):
             if tempCosts[0] == 2 * (n-1) - 3:
                 toddFlag = False if toddFlag else True
 
-        # 정보 채우기
         option[1].append(sum(tempCosts))
         FB_list = check_block_changed(nownow_n, tempCons, tempNList, tempSbox)
         option[2] = max([len(FB_list[0]) >> 1,len(FB_list[1]) >> 1]) # In Full case, max is fine.
@@ -315,7 +313,7 @@ def decompse_Full(n, sbox, parDepth):
 
             # constructing and allocating a block
             result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
-            resultGates += result   # 결과물 게이트 반영
+            resultGates += result
 
             numMadeBlock += 1
 
@@ -356,7 +354,7 @@ def decompse_Full(n, sbox, parDepth):
 def makeList_Half(n, now_n, sbox, cons, nList, depth):
     options = []
     for i in range(0, len(nList), 2):
-        # 뭉치려는 block의 even or odd를 보고 다르면 안하기
+        # For constructing at left side, only constructing with relvant row numbers at normal position.
         if sbox.index(nList[i]) & 1 != 0: # 0으로 고정함
             continue
 
@@ -364,28 +362,24 @@ def makeList_Half(n, now_n, sbox, cons, nList, depth):
 
         option = [[nList[i], nList[i + 1]], [], []]
 
-        # 실제 선택된 block을 뭉쳐 시작하기
         tempGates, tempCosts, tempSbox, tempCons, tempNList = makeBlock(n, nownow_n, sbox, cons, nList, [nList[i], nList[i + 1]])
 
         if tempCons[0] == '0' + '-' * (nownow_n - 1) and nownow_n > 2:
             tempCons = []
             nownow_n -= 1
 
-        # 정보 채우기
         option[1].append(sum(tempCosts))
         FB_list = check_block_changed(nownow_n, tempCons, tempNList, tempSbox)
-        option[2] = len(FB_list[0]) >> 1 # even block관련 개수만을 반환
+        option[2] = len(FB_list[0]) >> 1 # the number of free block related with normalr postion
 
-        # depth가 없을 경우 처리
         if depth == 0:
             options.append(option)
             continue
 
-        # 선택목록에서 고려할 경우의 수 선정
-        # even, odd 블록의 전수조사를 위해서
+        # only considering candidates at normal positions
         tempEvenList = [tempNList[i] for i in range(len(tempNList)) if tempSbox.index(tempNList[i]) & 1 == ((i & 1) ^ 0)]
 
-        # 깊이 전수조사 시작
+        # starting a depth exhaustive search
         tDepth = depth
         if depth > (len(tempEvenList) >> 1):
             tDepth = len(tempEvenList) >> 1
@@ -394,8 +388,7 @@ def makeList_Half(n, now_n, sbox, cons, nList, depth):
         bestQuality = [100 for j in range(tDepth)]
 
         depthExhasutive(n, nownow_n, tempSbox, tempCons, tempEvenList, nowQuality, bestQuality, 0, tDepth)
-
-        # 깊이-전수조사로 얻은 최고의 결과를 반영해서 option에 입력
+        
         option[1] = option[1] + bestQuality
         options.append(option)
 
@@ -409,27 +402,23 @@ def decompse_Half(n, sbox, parDepth):
     
     now_n = n
     while now_n > 1:
-        # 현재 상태에서 조건 설정
-        numMadeBlock = 0    # 매 단계마다 1개의 블록을 만들기 때문에 넘치는 상황을 고려하지 않아도 됨
+        numMadeBlock = 0
 
-        # now_n에 맞는 블록 만들기 시작
-        while numMadeBlock < (2 ** (now_n - 3)): # -2에서 -3으로 해서 절반씩하면 다른 상황이 되도록
-            now_parDepth = parDepth[n - now_n]  # now_n에 따라 다른 depth
+        # since half of block is already constructed and allocated, consider only lefted block.
+        while numMadeBlock < (2 ** (now_n - 3)):
+            now_parDepth = parDepth[n - now_n]
 
             # MAKELIST()
-            options = makeList_Half(n, n, tSbox, cons, nList, now_parDepth)                     # Half는 n비트 게이트를 다루기 때문에 now_n = n으로 입력
+            options = makeList_Half(n, n, tSbox, cons, nList, now_parDepth) # this function treats n-bit permutation, and thus now_n = n
 
             # CHOOSE()
             now_rows = choose(n, options)
 
-            # 실제 뭉치고, 반영
-            result, costs, tSbox, cons, nList = makeBlock(n, n, tSbox, cons, nList, now_rows)   # Half는 n비트 게이트를 다루기 때문에 now_n = n으로 입력
-            resultGates += result   # 결과물 게이트 반영
+            result, costs, tSbox, cons, nList = makeBlock(n, n, tSbox, cons, nList, now_rows) # this function treats n-bit permutation, and thus now_n = n
+            resultGates += result
 
-            # block 개수 하나 만든것을 명시
             numMadeBlock += 1
         
-        # 비트 하나 줄이기
         now_n -= 1
 
     return resultGates , tSbox
@@ -444,7 +433,7 @@ def decompose(n, sbox, parDepth):
     gates = decompse_Full(n-1, tSbox[1 << (n-1):], parDepth)
     for step in gates:
         for gate in step:
-            # gate 조건 추가 (Tof 이상의 게이트는 왼쪽도 조건으로 추가해야 함)
+            # adjusting gate
             if 0 in [c[0] for c in gate[1]]:
                 gate[1].append([n-1,1])
     resultGates += gates
@@ -452,25 +441,18 @@ def decompose(n, sbox, parDepth):
     return resultGates
 
 def decompse_only2(sbox):
-    # 해당 함수는 2-bit 순열의 항등행렬을 만들기 위한 용
+    # systhesis for 2-bit permutation
     resultGates = []
 
     cons = []
     nList = list(range(1 << 2))
     tSbox = sbox
 
-    # 실제 뭉치기
-    #region for actual making
-    # 실제 뭉치고, 반영 (첫번째 블록)
     result, costs, tSbox, cons, nList = makeBlock(2, 2, tSbox, cons, nList, [0,1])
-    for r in result:    # 결과물 게이트 반영
+    for r in result:
         for gate in r:
             resultGates.append(gate)
-    #endregion for actual making
-    ###############################################################
 
-    # parity 맞추기
-    #region for parity
     options = returnOptions(2, tSbox)
     paritySet = [op[1] for op in options]
 
@@ -487,12 +469,9 @@ def decompse_only2(sbox):
         gate = [2-2, []]
         tSbox = apply_gate(2, tSbox, gate)
         resultGates.append(gate)
-    #endregion for parity
-    ###############################################################
 
     return resultGates
 
-#################################################
 def Qube(n, sbox, depths, showFlag):
     resultGates = []
     tSbox = sbox
@@ -505,128 +484,7 @@ def Qube(n, sbox, depths, showFlag):
         print()
 
     for now_n in range(n, 2, -1):
-
-        # zero collision
-        now_gates = zeroCollision_noPrint(now_n, tSbox)
-        
-        # apply
-        nGates = [0 for i in range(n)]
-        for now_gate in now_gates:
-            tSbox = apply_gate(now_n, tSbox, now_gate)
-            nCons = len(now_gate[1])
-            if nCons > 1:
-                nGates[nCons] += 1
-                totalCost += 2 * nCons - 3
-            elif nCons == 1:
-                nGates[nCons] += 1
-            # gate 조정
-            n_diff = n - now_n
-            now_gate[0] += n_diff
-            for cons in now_gate[1]:
-                cons[0] += n_diff
-        resultGates.append(now_gates)
-        
-        if showFlag:
-            # count and show
-            print("C{})".format(now_n), end="\t")
-            for num in nGates:
-                print(num, end="\t")
-            print()
-
-        # block grouping
-        now_gates = decompose(now_n, tSbox, depths[n-now_n:])
-        
-        # apply
-        nGates = [0 for i in range(n)]
-        for step in now_gates:
-            for now_gate in step:
-                tSbox = apply_gate(now_n, tSbox, now_gate)
-                nCons = len(now_gate[1])
-                if nCons > 1:
-                    nGates[nCons] += 1
-                    totalCost += 2 * nCons - 3
-                elif nCons == 1:
-                    nGates[nCons] += 1
-                # gate 조정
-                n_diff = n - now_n
-                now_gate[0] += n_diff
-                for cons in now_gate[1]:
-                    cons[0] += n_diff
-        resultGates.append(now_gates)
-        
-        if showFlag:
-            # count and show
-            print("G{})".format(now_n), end="\t")
-            for num in nGates:
-                print(num, end="\t")
-            print()
-        
-        # correcting parities
-        gate = [now_n-now_n, [[now_n-1,1]]]
-        tSbox = apply_gate(now_n, tSbox, gate)
-        # gate 조정
-        n_diff = n - now_n
-        gate[0] += n_diff
-        for cons in gate[1]:
-            cons[0] += n_diff
-        resultGates.append([gate])
-        
-        if showFlag:
-            # count and show
-            nGates = [0 for i in range(n)]
-            nGates[1] = 1 # partiy에는 하나면 됨 (CN gate)
-            print("P{})".format(now_n), end="\t")
-            for num in nGates:
-                print(num, end="\t")
-            print()
-        
-        # 1-bit 낮추기
-        tempSbox = list(range(2**(now_n-1)))
-        for i in range(len(tempSbox)):
-            tempSbox[i]= int(tSbox[2 * i] / 2)
-        tSbox = tempSbox
-
-    # 2-bit에서 identity 만들기
-    #region for 2-bit
-    gates = decompse_only2(tSbox)
-
-    # 2-bit 결과 apply
-    cost = 0
-    for gate in gates:
-        if len(gate[1]) > 1:
-            cost += 2 * len(gate[1]) - 3
-        tSbox = apply_gate(2, tSbox, gate)
-        # gate 조정
-        n_diff = n - 2
-        gate[0] += n_diff
-        for cons in gate[1]:
-            cons[0] += n_diff
-    totalCost += cost
-    resultGates.append(gates)
-
-    if showFlag:
-        # count and show
-        print("E2)", end="\t")
-        print("[{}]".format(cost))
-        print("total Tof cost :", totalCost)
-    #endregion for 2-bit
-    ##################################################################
-
-    return resultGates
-
-def Qube_quick(n, sbox, depths, showFlag):
-    resultGates = []
-    tSbox = sbox
-    totalCost = 0
-
-    if showFlag:
-        print("\t", end="")
-        for i in range(n):
-            print("C{}N".format(i), end="\t")
-        print()
-
-    for now_n in range(n, 2, -1):
-        # zero collision
+        # mixing
         now_gates = nonInterrupting(now_n, tSbox)
         
         # apply
@@ -639,7 +497,7 @@ def Qube_quick(n, sbox, depths, showFlag):
                 totalCost += 2 * nCons - 3
             elif nCons == 1:
                 nGates[nCons] += 1
-            # gate 조정
+            # adjusting gate
             n_diff = n - now_n
             now_gate[0] += n_diff
             for cons in now_gate[1]:
@@ -653,7 +511,7 @@ def Qube_quick(n, sbox, depths, showFlag):
                 print(num, end="\t")
             print()
 
-        # block grouping
+        # decomposition
         now_gates = decompose(now_n, tSbox, depths[n-now_n:])
         
         # apply
@@ -667,7 +525,7 @@ def Qube_quick(n, sbox, depths, showFlag):
                     totalCost += 2 * nCons - 3
                 elif nCons == 1:
                     nGates[nCons] += 1
-                # gate 조정
+                # adjusting gate
                 n_diff = n - now_n
                 now_gate[0] += n_diff
                 for cons in now_gate[1]:
@@ -684,7 +542,7 @@ def Qube_quick(n, sbox, depths, showFlag):
         # correcting parities
         gate = [now_n-now_n, [[now_n-1,1]]]
         tSbox = apply_gate(now_n, tSbox, gate)
-        # gate 조정
+        # adjusting gate
         n_diff = n - now_n
         gate[0] += n_diff
         for cons in gate[1]:
@@ -694,29 +552,27 @@ def Qube_quick(n, sbox, depths, showFlag):
         if showFlag:
             # count and show
             nGates = [0 for i in range(n)]
-            nGates[1] = 1 # partiy에는 하나면 됨 (CN gate)
+            nGates[1] = 1 # only one gate is needed for correcting parity (CX gate)
             print("P{})".format(now_n), end="\t")
             for num in nGates:
                 print(num, end="\t")
             print()
         
-        # 1-bit 낮추기
+        # bit size is reduced
         tempSbox = list(range(2**(now_n-1)))
         for i in range(len(tempSbox)):
             tempSbox[i]= int(tSbox[2 * i] / 2)
         tSbox = tempSbox
 
-    # 2-bit에서 identity 만들기
-    #region for 2-bit
     gates = decompse_only2(tSbox)
 
-    # 2-bit 결과 apply
+    # apply
     cost = 0
     for gate in gates:
         if len(gate[1]) > 1:
             cost += 2 * len(gate[1]) - 3
         tSbox = apply_gate(2, tSbox, gate)
-        # gate 조정
+        # adjusting gate
         n_diff = n - 2
         gate[0] += n_diff
         for cons in gate[1]:
@@ -729,7 +585,5 @@ def Qube_quick(n, sbox, depths, showFlag):
         print("E2)", end="\t")
         print("[{}]".format(cost))
         print("total Tof cost :", totalCost)
-    #endregion for 2-bit
-    ##################################################################
 
     return resultGates
