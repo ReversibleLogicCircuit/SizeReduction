@@ -12,7 +12,7 @@ A target function is randomly generated with "randomPermutationGenerator.py" and
 
 ## How to synthesis with example function
 
-We recommand to type "Python ./syntehsis.py -h" first.
+**We recommand to type "Python ./syntehsis.py -h" first.**
 
 "python ./syntehsis.py ./example.function 6 0" or "python ./syntehsis.py ./example.function 6 1 1 1 1 1"
 
@@ -59,7 +59,7 @@ P3)	0	1	0	0	0	0
 
 E2)	[0]
 
-total Tof cost : 96
+total Tof cost : **96**
 
 Thu Jul  8 19:15:03 2021
 
