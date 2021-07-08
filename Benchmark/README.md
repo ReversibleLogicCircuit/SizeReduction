@@ -2,9 +2,9 @@
 
 There are 10 functions and its synthesized results.
 
-Among functions, URF5.sbox, nthPrime8, nthPrime10 and nthPrime11 have aprent structure that proposed algorithm uses.
+Among functions, URF5.sbox, nthPrime8, nthPrime10 and nthPrime11 have **aparent structure** that proposed algorithm uses.
 
-Therefore, "systhesis_for_exception.py" is used to synthesize for thess functions.
+Therefore, "systhesis_for_exception.py" is used to synthesize for these functions.
 
 Sepecific command with parameters are as below.
 
