@@ -7,8 +7,8 @@ A target function is randomly generated with "randomPermutationGenerator.py" and
 ## Description
 
 - randomPermutationGenerator.py: source for making a random function.
-- example_in.function: random 6-bit fucntion
-- exampe_in.real:
+- example.function: random 6-bit fucntion
+- exampe_out.real: output of synthesis (.real format)
 
 ## How to synthesis with example function
 
