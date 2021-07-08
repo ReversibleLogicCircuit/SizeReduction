@@ -1,4 +1,4 @@
-# ReversibleLogicCircuit
+# SizeReduction
 
 Branching test
 
