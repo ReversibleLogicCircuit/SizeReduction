@@ -4,7 +4,7 @@ import copy
 
 # gate example
 # X1 = [n-1, []]
-# C21 = [n-1, [[n-2,1]]], C2n1 = [n-1, [[n-2,0]]]
+# C21 = [n-1, [[n-2,1]]], X2 C21 X2 = [n-1, [[n-2,0]]]
 def apply_gate(n, sbox, gate):
     result = copy.deepcopy(sbox)
     pos = [[n-gate[0]-1, '-']] # by decreasing one, it matches
