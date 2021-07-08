@@ -1419,3 +1419,48 @@ def Qube(n, sbox, depths, showFlag):
         print("total Tof cost :", totalCost)
 
     return resultGates
+
+def pick(n, sbox, i):
+    m = bin(i + (1 << (n-1)))[3:].index("0") + 1
+    k = 0
+    for j in range(m):
+        k += 1 << (n-2-j)
+    
+    for j in range(k, (1 << n) - 1, 1):
+        a = sbox[j]
+        b = a ^ 1
+        for l in range(j+1, 1 << n, 1):
+            c = sbox[l]
+            
+            if b == c:
+                return (a,b)
+
+def n_pick(n, sbox, i):
+    m = bin(i + (1 << (n-1)))[3:].index("0") + 1
+    k = 0
+    for j in range(m):
+        k += 1 << (n-2-j)
+    
+    for j in range(k, (1 << n) - 1, 1):
+        a = sbox[j]            
+        b = a ^ 1        
+        if a & 1 != j & 1:
+            continue
+            
+        for l in range(j+1, 1 << n, 1):
+            c = sbox[l]
+            if b & 1 != l & 1:
+                continue
+            
+            if b == c:
+                return (a,b)
+            
+    for j in range(i << 1, (1 << n) - 1, 1):
+        a = sbox[j]
+        b = a ^ 1
+        
+        for l in range(j+1, 1 << n, 1):
+            c = sbox[l]
+            
+            if b == c:
+                return (a,b)
