@@ -12,6 +12,6 @@ A target function is randomly generated with "randomPermutationGenerator.py" and
 
 ## How to synthesis with example function
 
-Branching test
+We recommand to type "Python ./syntehsis.py -h" first.
 
-This test is done by hochang
+"python ./syntehsis.py ./example.function 6 0" or "python ./syntehsis.py ./example.function 6 1 1 1 1 1"
