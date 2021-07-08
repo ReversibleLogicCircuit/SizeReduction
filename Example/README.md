@@ -22,6 +22,7 @@ After typing above command, "example_out.real" file is generated in your directo
 
 Furthermore, you can read the below result too (total number of Toffoli gate is 96).
 
+"""
 Target file	: ./example_in.function
 
 \# of bits	: 6
@@ -69,3 +70,4 @@ Thu Jul  8 19:15:03 2021
 4-th decomp	[0, 1, 1, 2, 1, 0, 3, 0]
 
 3-th decomp	[0, 1, 1, 0]
+"""
