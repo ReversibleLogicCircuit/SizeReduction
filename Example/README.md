@@ -24,7 +24,7 @@ Furthermore, you can read the below result too (total number of Toffoli gate is 
 
 ```
 Target file	: ./example_in.function
-\# of bits	: 6
+# of bits	: 6
 Exha. depths	: [0, 0, 0, 0, 0]
 Thu Jul  8 19:14:58 2021
 	C0N	C1N	C2N	C3N	C4N	C5N	
