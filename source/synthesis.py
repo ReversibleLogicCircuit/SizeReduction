@@ -32,7 +32,7 @@ else:
     with open(args.path, "r") as fp:
         data = fp.readline()
     permutation = [int(n) for n in data[1:-2].split(", ")]
-    n = bin(len(permutation)).count('0') - 1
+n = bin(len(permutation)).count('0') - 1
 
 # setting for depths
 depths = [0 for i in range(20)]
