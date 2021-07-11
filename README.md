@@ -7,7 +7,7 @@
 3. Input format: two formats are acceptable by {synthesis.py}  
 	A) SPEC format: truth table (see, http://revlib.org)  
 	B) one-line notation: (see, https://en.wikipedia.org/wiki/Permutation#One-line_notation). For example, [7,2,0,1,5,3,6,4].  
-4. Output format: REAL format (see, http://revlib.org). This format is also supported by REViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm) for visualizing circuits.
+4. Output format: REAL format (see, http://revlib.org). This format is also supported by REViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm) for circuit visualization.
 
 
 ## --- About ./Example folder ---
