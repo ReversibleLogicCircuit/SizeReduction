@@ -1,4 +1,4 @@
-# About benchmark results
+# Benchmarks
 
 For URF1, URF2, URF3, URF4, and nthPrime7, following d_n options have been applied.
 ```
