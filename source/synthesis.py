@@ -20,9 +20,9 @@ n = bin(len(permutation)).count('0') - 1
 depths = [0 for i in range(20)]
 for i in range(len(args.depths)):
     depths[i] = args.depths[i]
-if depths.index(0) != 0:
-    for i in range(depths.index(0), n, 1):
-        depths[i] = depths[depths.index(0) - 1]
+if len(args.depths) != 0:
+    for i in range(len(args.depths), n, 1):
+        depths[i] = depths[len(args.depths) - 1]
 
 # synthesis for reversible logic circuit
 gates = alg_synthesis(n, permutation, depths, True)
