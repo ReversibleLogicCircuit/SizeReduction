@@ -1,14 +1,9 @@
 # Example
-
-In this page, it is explained how to synthesize with proposed algorithm.
-
-A target function is randomly generated with "randomPermutationGenerator.py" and is 6-bit function.
-
 ## Description
 
-- randomPermutationGenerator.py: source for making a random function.
-- example.function: random 6-bit fucntion
-- exampe_out.real: output of synthesis (.real format)
+- randomPermutationGenerator.py: generate a random substitution function.
+- example.function: 6-bit input example
+- exampe_out.real: 6-bit output example (.real format)
 
 ## How to synthesis with example function
 
