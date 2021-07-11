@@ -2,8 +2,8 @@
 </br>
  
 ### --- ./source folder ---
-1. {core.py}: all the functions introduced in https://arxiv..., plus some miscellaneous functions have been implemented.
-2. {synthesis.py}: It takes as input a file {name.function} and outputs a file {name_out.real}.
+1. core.py: all the functions introduced in https://arxiv..., plus some miscellaneous functions have been implemented.
+2. synthesis.py: It takes as input a file {name.function} and outputs a file {name_out.real}.
 3. Input formats (either is acceptable): \
 	a) SPEC format; truth table (see, http://revlib.org) \
 	b) one-line notation (see, https://en.wikipedia.org/wiki/Permutation#One-line_notation)  
