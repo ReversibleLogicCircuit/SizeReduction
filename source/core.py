@@ -47,6 +47,20 @@ def sub_N_PICK(n, sbox, i):
             if b == c:
                 return (a,b)
 
+def sub_PRE_PICK(n, sbox, i):    
+    for j in range(i << 1, (1 << n) - 1, 1):
+        a = sbox[j]
+        if j & 1 != sbox.index(a ^ 1) & 1:
+            continue
+            
+        for l in range(j+1, 1 << n, 1):
+            b = sbox[l]
+            if l & 1 != sbox.index(b ^ 1) & 1:
+                continue
+            
+            if j & 1 != l & 1:
+                return (a,b)
+
 def sub_CONS(n, index1, index2, cons):
     gates = []
     nextPos = next_position(n, cons)
