@@ -8,14 +8,14 @@
 ## Example commands
 For given input, default command is
 ```
-/Example$ python ../source/synthesis.py ./example.function
+/example$ python ../source/synthesis.py ./example.function
 ```
 To specify d_m for depth-d_m exhaustive search,
 ```
-/Example$ python ../source/synthesis.py ./example.function d_n d_{n-1} d_{n-2} ...
-/Example$ python ../source/synthesis.py ./example.function 1
-/Example$ python ../source/synthesis.py ./example.function 0 2
-/Example$ python ../source/synthesis.py ./example.function 1 2 2 3
+/example$ python ../source/synthesis.py ./example.function d_n d_{n-1} d_{n-2} ...
+/example$ python ../source/synthesis.py ./example.function 1
+/example$ python ../source/synthesis.py ./example.function 0 2
+/example$ python ../source/synthesis.py ./example.function 1 2 2 3
 ```
 The second line applies d_m=1 for all steps.
 The third line applies d_6=0, d_5=2, d_4=2, d_3=2 in each step.
