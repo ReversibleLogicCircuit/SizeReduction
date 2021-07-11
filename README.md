@@ -1,8 +1,8 @@
-# Python implementation of reversible logic circuit synthesis algorithm given by https://arxiv...
+### Python implementation of reversible logic circuit synthesis algorithm given by https://arxiv...
 
 
-# --- About {source} folder ---
-# 1. {core.py}: all the functions introduced in https://arxiv..., plus some miscellaneous functions are implemented.
+## --- About {source} folder ---
+### 1. {core.py}: all the functions introduced in https://arxiv..., plus some miscellaneous functions are implemented.
 # 2. {synthesis.py}: It takes as input a file {name.function} and outputs a file {name_out.real}.
 # 3. Input format: two formats are acceptable by {synthesis.py}
 #   a) SPEC format: truth table (see, http://revlib.org)
