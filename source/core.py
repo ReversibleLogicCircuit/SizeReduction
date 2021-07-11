@@ -937,9 +937,9 @@ def choose(n, options):
     return tempOps[0][0]
 
 ##############################
-# depth exhaustive search 
+# depth-d_m exhaustive search 
 ##############################
-# depth exhaustive search (using recursive function)
+# depth-d_m exhaustive search (using a recursive function)
 # nowQuality and BestQuality must be defiend as length is depth
 # ex) d=3, nowQuality = [10, 10, 10], bestQuality = [10, 10, 10]
 def depthExhasutive(n, now_n, sbox, cons, nList, nowQuality, bestQuality, now_d, d):
@@ -1105,7 +1105,7 @@ def makeList_Half(n, now_n, sbox, cons, nList, depth):
     options = []
     for i in range(0, len(nList), 2):
         # For constructing at left side, only constructing with relvant row numbers at normal position.
-        if sbox.index(nList[i]) & 1 != 0: # 0으로 고정함
+        if sbox.index(nList[i]) & 1 != 0: # fixed to be 0
             continue
 
         nownow_n = copy.deepcopy(now_n)
