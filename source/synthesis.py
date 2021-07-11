@@ -10,11 +10,29 @@ parser.add_argument('path', metavar='File', type=str, help='an target permutatio
 parser.add_argument('depths', metavar='N', type=int, nargs='*', help='an integer for the accumulator')
 args = parser.parse_args()
 
+def read_spec_file(path):
+    result = []
+    
+    with open(path, "r") as fp:
+        data = fp.readlines()
+        
+    for d in data:
+        if d[0] in [".", "#"]:
+            continue
+            
+        result.append(int(d[:-1], 2))      
+        
+    return result
+
 # reading a file
-with open(args.path, "r") as fp:
-    data = fp.readline()
-permutation = [int(n) for n in data[1:-2].split(", ")]
-n = bin(len(permutation)).count('0') - 1
+FilenameExtension = args.path.split(".")[-1]
+if FilenameExtension == "spec":
+    permutation = read_spec_file(args.path)
+else:
+    with open(args.path, "r") as fp:
+        data = fp.readline()
+    permutation = [int(n) for n in data[1:-2].split(", ")]
+    n = bin(len(permutation)).count('0') - 1
 
 # setting for depths
 depths = [0 for i in range(20)]
