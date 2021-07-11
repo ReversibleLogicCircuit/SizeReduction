@@ -702,10 +702,17 @@ def alg_synthesis(n, sbox, depths, showFlag):
 
     # apply
     cost = 0
+    nGates = [0 for i in range(n)]
     for gate in gates:
         if len(gate[1]) > 1:
             cost += 2 * len(gate[1]) - 3
         tSbox = apply_gate(2, tSbox, gate)
+        nCons = len(now_gate[1])
+        if nCons > 1:
+            nGates[nCons] += 1
+            totalCost += 2 * nCons - 3
+        elif nCons == 1:
+            nGates[nCons] += 1
         # adjusting gate
         n_diff = n - 2
         gate[0] += n_diff
@@ -717,8 +724,9 @@ def alg_synthesis(n, sbox, depths, showFlag):
     if showFlag:
         # count and show
         print("E2)", end="\t")
-        print("[{}]".format(cost))
-        print("total Tof cost :", totalCost)
+        for num in nGates:
+            print(num, end="\t")
+        print()
 
     return resultGates
 
