@@ -1,7 +1,6 @@
 # Example
 ## Description
 
-- randomPermutationGenerator.py: generate a random substitution function.
 - example.function: 6-bit input example
 - exampe_out.real: 6-bit output example (.real format)
 
