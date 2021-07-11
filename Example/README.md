@@ -5,18 +5,25 @@
 - example.function: 6-bit input example
 - exampe_out.real: 6-bit output example (.real format)
 
-## How to synthesis with example function
 
-**We recommand to type "Python ./syntehsis.py -h" first.**
+## Example commands
+For an n-bit input, default command is
+```
+/Example$ python ../source/synthesis.py ./example.function n
+/Example$ python ../source/synthesis.py ./example.function 6
+```
+To specify d_m for depth-d_m exhaustive search,
+```
+/Example$ python ../source/synthesis.py ./example.function n d_n d_{n-1} d_{n-2} ...
+/Example$ python ../source/synthesis.py ./example.function 6 1 1 1 1
+```
 
-"python ./syntehsis.py ./example.function 6 0" or "python ./syntehsis.py ./example.function 6 1 1 1 1 1"
+## Output
+Once the program finishes, {example_out.real} will be generated. REAL format is also supported by RCViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm), which can visualize the circuit.
 
-## Results
-
-After typing above command, "example_out.real" file is generated in your directory.
-
-Furthermore, you can read the below result too (total number of Toffoli gate is 96).
-
+## Results on screen
+User will see something like below on the screen.
+Cm means 
 ```
 Target file	: ./example_in.function
 # of bits	: 6
