@@ -5,10 +5,8 @@
 1. {core.py}: all the functions introduced in https://arxiv..., plus some miscellaneous functions are implemented.
 2. {synthesis.py}: It takes as input a file {name.function} and outputs a file {name_out.real}.
 3. Input format: two formats are acceptable by {synthesis.py}
-
-  a) SPEC format: truth table (see, http://revlib.org)
-
-  b) one-line notation: (see, https://en.wikipedia.org/wiki/Permutation#One-line_notation). For example, [7,2,0,1,5,3,6,4].
+	a) SPEC format: truth table (see, http://revlib.org)
+	b) one-line notation: (see, https://en.wikipedia.org/wiki/Permutation#One-line_notation). For example, [7,2,0,1,5,3,6,4].
 4. Output format: REAL format (see, http://revlib.org). This format is also supported by REViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm) for visualizing circuits.
 
 
