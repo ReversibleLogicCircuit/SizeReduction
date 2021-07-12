@@ -1,4 +1,4 @@
-### Python3 implementation of reversible logic circuit synthesis algorithm given by https://arxiv...
+### Python3 implementation of reversible logic circuit synthesis algorithm given by https://arxiv.org/abs/2107.04298
 </br>
  
 ### --- ./source folder ---
