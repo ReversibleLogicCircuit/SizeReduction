@@ -6,7 +6,7 @@
 2. synthesis.py: It takes as input a file {name.function} or {name.spec} and outputs a file {name_out.real}.
 3. Input formats (either is acceptable): \
 	a) SPEC format; truth table (see, http://revlib.org) \
-	b) one-line notation (see, https://en.wikipedia.org/wiki/Permutation#One-line_notation)  
+	b) one-line notation with arbitrary extension (see, https://en.wikipedia.org/wiki/Permutation#One-line_notation)  
 4. Output format: REAL format (see, http://revlib.org). This format is also supported by RCViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm) for circuit visualization.
 </br>
 
