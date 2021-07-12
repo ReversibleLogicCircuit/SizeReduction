@@ -14,13 +14,15 @@ For given input, default command is
 To specify d_j for depth-d_j exhaustive search,
 ```
 /example$ python ../source/synthesis.py ./example.function d_{n-1} d_{n-2} d_{n-3} ...
+/example$ python ../source/synthesis.py ./example.function
 /example$ python ../source/synthesis.py ./example.function 1
 /example$ python ../source/synthesis.py ./example.function 0 2
 /example$ python ../source/synthesis.py ./example.function 1 2 2 3
 ```
-The second line applies d_j=1 for all j.
-The third line applies d_5=0, d_4=2, d_3=2, d_2=2, d_1=2 in each step.  
-The fourth line applies d_6=1, d_5=2, d_4=2, d_3=3, d_2=3, d_1=3 in each step.  
+The second line applies d_j=0 for all j (default).
+The third line applies d_j=1 for all j.
+The fourth line applies d_5=0, d_4=2, d_3=2, d_2=2, d_1=2 in each step.  
+The fifth line applies d_6=1, d_5=2, d_4=2, d_3=3, d_2=3, d_1=3 in each step.  
 Search depth larger than the number of remaining row pairs is ignored for excessive amount.  
 
 ## Output
