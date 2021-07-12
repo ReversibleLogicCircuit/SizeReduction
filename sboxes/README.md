@@ -1,6 +1,7 @@
 # Applications
 
 ```
+/sboxes$ python ../source/synthesis.py ./AES.sbox 3
 /sboxes$ python ../source/synthesis.py ./Skipjack.sbox 2
 /sboxes$ python ../source/synthesis.py ./KHAZAD.sbox 2
 /sboxes$ python ../source/synthesis.py ./DES1.sbox 2
