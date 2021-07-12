@@ -1,4 +1,4 @@
-# Reproducing https://arxiv.org/abs/2107.04298
+## Reproducing https://arxiv.org/abs/2107.04298
 
 ```
 /sboxes$ python ../source/synthesis.py ./AES.sbox 3
@@ -16,5 +16,5 @@
 
 </br>
 
-# Results with various d_n
+## Results with various d_n
 
