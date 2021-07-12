@@ -24,10 +24,10 @@ Some nthPrimes have small number of interrupting positions. To utilize it, we ha
 ```
 </br>
 
-## Results with various d_n  
+## Results with various d_j  
 Each entry reads (QC,#TOF)  
 
-|  Functions |     d_n=0     |     d_n=1     |     d_n=2     |     d_n=3     |     d_n=4     | ..., d_11=0, d_10=1, d_9=2, d_8=3, d_7=4, ... |
+|  Functions |      d=0      |      d=1      |      d=2      |      d=3      |      d=4      | ..., d_11=0, d_10=1, d_9=2, d_8=3, d_7=4, ... |
 |    ----    |      ----     |     ----      |     ----      |     ----      |     ----      |                       ----                    |
 |    URF1    | 13318, 2029   |    not yet    |    not yet    |    not yet    |    not yet    |                     not yet                   |
 |    URF2    | 5510, 803     |    not yet    |    not yet    |    not yet    |    not yet    |                     not yet                   |
