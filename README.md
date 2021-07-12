@@ -2,7 +2,7 @@
 </br>
  
 ### --- ./source folder ---
-1. core.py: all the functions introduced in https://arxiv..., plus some miscellaneous functions have been implemented.
+1. core.py: all the functions introduced in https://arxiv.org/abs/2107.04298, plus some miscellaneous functions have been implemented.
 2. synthesis.py: It takes as input a file {name.function} and outputs a file {name_out.real}.
 3. Input formats (either is acceptable): \
 	a) SPEC format; truth table (see, http://revlib.org) \
@@ -19,8 +19,8 @@
 </br>
 
 ## --- ./benchmark folder ---
-1. To reproduce the benchmark results in https://arxiv...: run the code with specified options given in README.md in the folder.
+1. To reproduce the benchmark results in https://arxiv.org/abs/2107.04298: run the code with specified options given in README.md in the folder.
 </br>
 
 ## --- ./sboxes folder ---
-1. To reproduce the S-box circuits found by https://arxiv...: run the code with specified options given in README.md in the folder.
+1. To reproduce the S-box circuits found by https://arxiv.org/abs/2107.04298: run the code with specified options given in README.md in the folder.
