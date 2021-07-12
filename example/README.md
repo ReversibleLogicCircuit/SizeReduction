@@ -33,7 +33,7 @@ The image file {Example_out_circuit.bmp} is obtained by RCViewer+.
 
 ## Results on screen
 User will see something like below on the screen.
-Detailed cost on Mixing and preprocessing comes first, and then the cost on SizeReduction comes second in each step. 
+Detailed cost on Mixing and preprocessing comes first, and then the cost on SizeReduction comes second in each step. E2 entry is for exhaustive search of last 2-bit permutation.
 ```
         C0X     C1X     C2X     C3X     C4X     C5X
 P6)     0       20      4       1       0       0
@@ -44,7 +44,7 @@ P4)     0       6       2       0       0       0
 R4)     0       6       5       1       0       0
 P3)     0       0       1       0       0       0
 R3)     0       1       2       0       0       0
-E2)     [0]
+E2)     0       0       0       0       0       0
 total Tof cost : 96
 Target file     : ./example.function
 # of bits       : 6
