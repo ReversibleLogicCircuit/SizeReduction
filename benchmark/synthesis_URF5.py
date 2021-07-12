@@ -104,7 +104,7 @@ depths = [0 for i in range(20)]
 for i in range(len(args.depths)):
     depths[i] = args.depths[i]
 if len(args.depths) != 0:
-    for i in range(len(args.depths), n, 1):
+    for i in range(len(args.depths), n+1, 1):
         depths[i] = depths[len(args.depths) - 1]
 
 # synthesis for reversible logic circuit
@@ -124,7 +124,7 @@ for i in range(len(ttpermutation)):
 tpermutation = ttpermutation
 
 # 한 비트 줄인거 synthesis
-gates = alg_synthesis(n-1, tpermutation, depths[1:], True)
+gates = alg_synthesis(n-1, tpermutation, depths[2:], True)
 
 # 게이트 조정
 for i in range(0, len(gates[:-1]), 3):
