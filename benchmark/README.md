@@ -17,7 +17,7 @@ URF5 is somewhat structured; all row numbers are at normal positions. To utilize
 
 Some nthPrimes have small number of interrupting positions. To utilize it, we have used
 ```
-/benchmark$ python ./synthesis_nthPrime.py ./nthPrime7.sbox 2 2 2 4 4 4
+/benchmark$ python ./synthesis_nthPrime.py ./nthPrime8.sbox 2 2 2 4 4 4 4
 /benchmark$ python ./synthesis_nthPrime.py ./nthPrime9.sbox 1 1 1 1 1 1 1
 /benchmark$ python ./synthesis_nthPrime.py ./nthPrime10.sbox 1 1 1 1 1 1 1 1
 /benchmark$ python ./synthesis_nthPrime.py ./nthPrime11.sbox 0 0 1 1 1 1 1 1 1
