@@ -1,7 +1,8 @@
 # Example
 ## Description
 
-- example.function: 6-bit input example
+- example.function: 6-bit input example (one-line notation)
+- example.spec: 6-bit input example (.spec format)
 - exampe_out.real: 6-bit output example (.real format)
 
 
