@@ -31,7 +31,8 @@ if FilenameExtension == "spec":
 else:
     with open(args.path, "r") as fp:
         data = fp.readline()
-    permutation = [int(n) for n in data[1:-2].split(", ")]
+    data = data[data.index("[")+1:data.index("]")]
+    permutation = [int(n) for n in data.split(", ")]
 n = bin(len(permutation)).count('0') - 1
 
 # setting for depths
