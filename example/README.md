@@ -26,6 +26,7 @@ The fourth line applies d_6=1, d_5=2, d_4=2, d_3=3 in each step.
 Once the program finishes, {example_out.real} will be generated.
 RCViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm) support REAL formats.
 The image file {Example_out_circuit.bmp} is obtained by RCViewer+.
+![circuit_for_example](./Example_out_circuit.bmp)
 
 ## Results on screen
 User will see something like below on the screen.
