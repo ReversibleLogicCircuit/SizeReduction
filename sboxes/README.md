@@ -1,4 +1,4 @@
-# Applications
+# Reproducing https://arxiv.org/abs/2107.04298
 
 ```
 /sboxes$ python ../source/synthesis.py ./AES.sbox 3
@@ -13,3 +13,8 @@
 /sboxes$ python ../source/synthesis.py ./DES7.sbox 2
 /sboxes$ python ../source/synthesis.py ./DES8.sbox 2
 ```
+
+</br>
+
+# Results with various d_n
+
