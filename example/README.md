@@ -35,19 +35,20 @@ The image file {Example_out_circuit.bmp} is obtained by RCViewer+.
 User will see something like below on the screen.
 Detailed cost on Mixing and preprocessing comes first, and then the cost on SizeReduction comes second in each step. E2 entry is for exhaustive search of last 2-bit permutation.
 ```
-        C0X     C1X     C2X     C3X     C4X     C5X
-P6)     0       20      4       1       0       0
-R6)     0       68      17      8       0       2
-P5)     0       6       3       0       0       0
-R5)     0       17      9       3       0       0
-P4)     0       6       2       0       0       0
-R4)     0       6       5       1       0       0
-P3)     0       0       1       0       0       0
-R3)     0       1       2       0       0       0
-E2)     0       0       0       0       0       0
-total Tof cost : 96
-Target file     : ./example.function
+Tue Jul 13 15:33:57 2021
+Tue Jul 13 15:33:58 2021
+Target file     : .\example\example.function
 # of bits       : 6
 Exha. depths    : [0, 0, 0, 0, 0]
+        C0X     C1X     C2X     C3X     C4X     C5X
+P6)     1       20      4       1       0       0
+R6)     18      69      17      8       0       2
+P5)     1       6       3       0       0       0
+R5)     10      18      9       3       0       0
+P4)     1       6       2       0       0       0
+R4)     6       7       5       1       0       0
+P3)     0       0       1       0       0       0
+R3)     1       2       2       0       0       0
+E2)     2       1       0       0       0       0
 Number of Toffoli gate: 96
 ```
