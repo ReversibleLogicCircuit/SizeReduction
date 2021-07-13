@@ -1,81 +1,7 @@
 import argparse
 import time
+
 from core import *
-
-def writeRealFormat_for_URF5(n, gates, fname):
-    with open(fname, "w") as fp:
-        fp.write(".version 2.0\n")
-        fp.write(".numvars {}\n".format(n))
-        temp = ".variables "
-        for i in range(n):
-            temp += "x{} ".format(i+1)
-        fp.write(temp[:-1] + "\n")
-        temp = ".inputs "
-        for i in range(n):
-            temp += "i{} ".format(i+1)
-        fp.write(temp[:-1] + "\n")
-        temp = ".outputs "
-        for i in range(n):
-            temp += "o{} ".format(i+1)
-        fp.write(temp[:-1] + "\n")
-        fp.write(".constants " + "-" * n + "\n")
-        fp.write(".garbage " + "-" * n + "\n")
-        fp.write(".begin\n")
-
-        
-        for gate in gates[0]:
-            strGates = writeGate(n, gate)
-            for gate in strGates:
-                fp.write(gate + "\n")
-
-        for i in range(0, len(gates[1]), 2):
-            for gate in gates[1][i]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-            for gate in gates[1][i+1]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-
-        for gate in gates[2]:
-            strGates = writeGate(n, gate)
-            for gate in strGates:
-                fp.write(gate + "\n")
-        
-        # 쓰기 시작
-        for i in range(0, len(gates[3][:-1]), 3):
-            # non- interrupting 
-            for gate in gates[3][i]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-
-            # decompising
-            for j in range(0, len(gates[3][i+1]), 2):
-                for gate in gates[3][i+1][j]:
-                    strGates = writeGate(n, gate)
-                    for gate in strGates:
-                        fp.write(gate + "\n")
-                for gate in gates[3][i+1][j+1]:
-                    strGates = writeGate(n, gate)
-                    for gate in strGates:
-                        fp.write(gate + "\n")
-
-            # parity
-            for gate in gates[3][i+2]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-
-        # 2-bits
-        for gate in gates[3][-1]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-        # 쓰기 끝
-        
-        fp.write(".end")
 
 parser = argparse.ArgumentParser(
     prog="Qube",
@@ -84,20 +10,6 @@ parser = argparse.ArgumentParser(
 parser.add_argument('path', metavar='File', type=str, help='an target permutation')
 parser.add_argument('depths', metavar='N', type=int, nargs='*', help='an integer for the accumulator')
 args = parser.parse_args()
-
-def read_spec_file(path):
-    result = []
-    
-    with open(path, "r") as fp:
-        data = fp.readlines()
-        
-    for d in data:
-        if d[0] in [".", "#"]:
-            continue
-            
-        result.append(int(d[:-1], 2))      
-        
-    return result
 
 # reading a file
 FilenameExtension = args.path.split(".")[-1]
@@ -119,6 +31,7 @@ if len(args.depths) != 0:
         depths[i] = depths[len(args.depths) - 1]
 
 # synthesis for reversible logic circuit
+print(time.strftime("%c", time.localtime(time.time())))
 resultsGates = []
 gatesForPre = []
 if n == 8:
@@ -152,20 +65,19 @@ elif n == 11:
     gatesForPre.append([n-n, [[n-1,1], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,1]]])                     # c^{8}X
     gatesForPre.append([n-n, [[n-1,1], [n-2,1], [n-3,1], [n-4,1], [n-5,0], [n-6,1], [n-7,1]]])                              # c^{7}X
 
+# with above gates, the resulting permutation is 0.5:0.5:0
 tpermutation = copy.deepcopy(permutation)
 for gate in gatesForPre:
     tpermutation = apply_gate(n, tpermutation, gate)
-resultsGates.append(gatesForPre)
-# 최상위 비트 normal position만 처리
+resultsGates += [gatesForPre]
+
+# reduction
 gates = alg_reduction(n, tpermutation, depths)
-for step in gates:
+for step in gates[:-1]:
     for gate in step:
         tpermutation = apply_gate(n, tpermutation, gate)
-resultsGates.append(gates)
-
-gate = [n-n, [[n-1,1]]]
-tpermutation = apply_gate(n, tpermutation, gate)
-resultsGates.append([gate])
+tpermutation = apply_gate(n, tpermutation, gates[-1])
+resultsGates += [gates]
 
 # 1-bit 낮추기
 ttpermutation = list(range(2**(n-1)))
@@ -174,11 +86,11 @@ for i in range(len(ttpermutation)):
 tpermutation = ttpermutation
 
 # 한 비트 줄인거 synthesis
-gates = alg_synthesis(n-1, tpermutation, depths[1:], True)
+gates = alg_synthesis(n-1, tpermutation, depths[1:])
 
-# 게이트 조정
-for i in range(0, len(gates[:-1]), 3):
-    # non- interrupting 
+# adjusting gates
+for i in range(0, len(gates[:-1]), 2):
+    # mixing
     for gate in gates[i]:
         n_diff = 1
         gate[0] += n_diff
@@ -186,7 +98,7 @@ for i in range(0, len(gates[:-1]), 3):
             cons[0] += n_diff
     
     # decompising
-    for j in range(0, len(gates[i+1]), 2):
+    for j in range(0, len(gates[i+1][:-1]), 2):
         for gate in gates[i+1][j]:
             n_diff = 1
             gate[0] += n_diff
@@ -197,95 +109,34 @@ for i in range(0, len(gates[:-1]), 3):
             gate[0] += n_diff
             for cons in gate[1]:
                 cons[0] += n_diff
-    
-    # parity
-    for gate in gates[i+2]:
-        n_diff = 1
-        gate[0] += n_diff
-        for cons in gate[1]:
-            cons[0] += n_diff
-
+    # adjusting gate for CX1n
+    n_diff = 1
+    gates[i+1][-1][0] += n_diff
+    for cons in gates[i+1][-1][1]:
+        cons[0] += n_diff
+# adusting gate for result of 2-bit reudction
 for gate in gates[-1]:
     n_diff = 1
     gate[0] += n_diff
     for cons in gate[1]:
         cons[0] += n_diff
-resultsGates.append(gates)
+
+resultsGates += gates
 print(time.strftime("%c", time.localtime(time.time())))
 temp = args.path.split(".")
 temp[-2] += "_out"
 temp = temp[:-1] + ["real"]
 temp = ".".join(temp)
-writeRealFormat_for_URF5(n, resultsGates, temp)
+writeRealFormat(n, resultsGates, temp)
 
-nowCostsDecomp = []
 # printing related informations
 print("Target file\t:", args.path)
 print("# of bits\t:", n)
-print("Exha. depths\t:", depths[:n-1])
-cost = 0
-for gate in resultsGates[0]:
-    if len(gate[1]) > 1:
-        cost += 2 * len(gate[1]) - 3
-    permutation = apply_gate(n, permutation, gate)
+print("Exha. depths\t:", depths[:n])
 
-for i in range(0, len(resultsGates[1]), 2):
-    tempCost = 0
-    for gate in resultsGates[1][i]:
-        if len(gate[1]) > 1:
-            tempCost += 2 * len(gate[1]) - 3
-        permutation = apply_gate(n, permutation, gate)
-    for gate in resultsGates[1][i+1]:
-        if len(gate[1]) > 1:
-            tempCost += 2 * len(gate[1]) - 3
-        permutation = apply_gate(n, permutation, gate)
-    nowCostsDecomp.append(tempCost)
-    cost += tempCost
+show_Qube_gates(n, resultsGates)
 
-for gate in resultsGates[2]:
-    if len(gate[1]) > 1:
-        cost += 2 * len(gate[1]) - 3
-    permutation = apply_gate(n, permutation, gate)
-
-# printing related informations
-costsDecomp = [[] for i in range(n-2)]
-for i in range(0, len(resultsGates[3][:-1]), 3):
-    # non- interrupting 
-    for gate in resultsGates[3][i]:
-        if len(gate[1]) > 1:
-            cost += 2 * len(gate[1]) - 3
-        permutation = apply_gate(n, permutation, gate)
-    
-    # decompising
-    for j in range(0, len(resultsGates[3][i+1]), 2):
-        tempCost = 0
-        for gate in resultsGates[3][i+1][j]:
-            if len(gate[1]) > 1:
-                tempCost += 2 * len(gate[1]) - 3
-            permutation = apply_gate(n, permutation, gate)
-        for gate in resultsGates[3][i+1][j+1]:
-            if len(gate[1]) > 1:
-                tempCost += 2 * len(gate[1]) - 3
-            permutation = apply_gate(n, permutation, gate)
-        cost += tempCost
-        costsDecomp[int(i/3)].append(tempCost)
-    
-    # parity
-    for gate in resultsGates[3][i+2]:
-        if len(gate[1]) > 1:
-            cost += 2 * len(gate[1]) - 3
-        permutation = apply_gate(n, permutation, gate)
-
-print()
-# 2-bits
-for gate in resultsGates[3][-1]:
-    if len(gate[1]) > 1:
-        cost += 2 * len(gate[1]) - 3
-    permutation = apply_gate(n, permutation, gate)
-
+permutation = apply_Qube_gates(n, permutation, resultsGates)
 if permutation != list(range(1 << n)):
-    print("result is not equal!!!")
+    print("Not equal!")
     print(permutation)
-print()
-
-print("Number of Toffoli gate:", cost)
