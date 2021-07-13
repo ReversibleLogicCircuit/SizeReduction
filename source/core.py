@@ -577,7 +577,7 @@ def alg_reduction(n, sbox, parDepth):
                 gate[1].append([n-1,1])
     resultGates += gates
 
-    return resultGates
+    return resultGates + [[n-n, [[n-1,1]]]]
 
 # synthesis for 2 bits permutation
 def alg_serach(sbox):
@@ -613,120 +613,62 @@ def alg_serach(sbox):
     return resultGates
 
 # main function
-def alg_synthesis(n, sbox, depths, showFlag):
+def alg_synthesis(n, sbox, depths):
     resultGates = []
     tSbox = sbox
     totalCost = 0
-
-    if showFlag:
-        print("\t", end="")
-        for i in range(n):
-            print("C{}X".format(i), end="\t")
-        print()
 
     for now_n in range(n, 2, -1):
         # mixing
         now_gates = alg_preprocessing(now_n, tSbox)
         
         # apply
-        nGates = [0 for i in range(n)]
         for now_gate in now_gates:
             tSbox = apply_gate(now_n, tSbox, now_gate)
-            nCons = len(now_gate[1])
-            if nCons > 1:
-                nGates[nCons] += 1
-                totalCost += 2 * nCons - 3
-            elif nCons == 1:
-                nGates[nCons] += 1
             # adjusting gate
             n_diff = n - now_n
             now_gate[0] += n_diff
             for cons in now_gate[1]:
                 cons[0] += n_diff
         resultGates.append(now_gates)
-        
-        if showFlag:
-            # count and show
-            print("P{})".format(now_n), end="\t")
-            for num in nGates:
-                print(num, end="\t")
-            print()
 
         # decomposition
         now_gates = alg_reduction(now_n, tSbox, depths[n-now_n:])
         
         # apply
-        nGates = [0 for i in range(n)]
-        for step in now_gates:
+        for step in now_gates[:-1]:
             for now_gate in step:
                 tSbox = apply_gate(now_n, tSbox, now_gate)
-                nCons = len(now_gate[1])
-                if nCons > 1:
-                    nGates[nCons] += 1
-                    totalCost += 2 * nCons - 3
-                elif nCons == 1:
-                    nGates[nCons] += 1
                 # adjusting gate
                 n_diff = n - now_n
                 now_gate[0] += n_diff
                 for cons in now_gate[1]:
                     cons[0] += n_diff
-        resultGates.append(now_gates)
-        
-        if showFlag:
-            # count and show
-            print("R{})".format(now_n), end="\t")
-            for num in nGates:
-                print(num, end="\t")
-            print()
-        
-        # correcting parities with a CX1n gate
-        gate = [now_n-now_n, [[now_n-1,1]]]
-        tSbox = apply_gate(now_n, tSbox, gate)
-        # adjusting gate
+        # adjusting gate for CX1n
         n_diff = n - now_n
-        gate[0] += n_diff
-        for cons in gate[1]:
+        now_gates[-1][0] += n_diff
+        for cons in now_gates[-1][1]:
             cons[0] += n_diff
-        resultGates.append([gate])
+        resultGates.append(now_gates)
         
         # bit size is reduced
         tempSbox = list(range(2**(now_n-1)))
         for i in range(len(tempSbox)):
             tempSbox[i]= int(tSbox[2 * i] / 2)
         tSbox = tempSbox
-        #print("P_{} -> P_{}".format(now_n, now_n-1))
-        #print("P_{}:".format(now_n - 1), tSbox)   
+        #print("P_{} -> P_{} (=".format(now_n, now_n-1), tSbox, ")")
 
     gates = alg_serach(tSbox)
 
     # apply
-    cost = 0
-    nGates = [0 for i in range(n)]
     for gate in gates:
-        if len(gate[1]) > 1:
-            cost += 2 * len(gate[1]) - 3
         tSbox = apply_gate(2, tSbox, gate)
-        nCons = len(now_gate[1])
-        if nCons > 1:
-            nGates[nCons] += 1
-            totalCost += 2 * nCons - 3
-        elif nCons == 1:
-            nGates[nCons] += 1
         # adjusting gate
         n_diff = n - 2
         gate[0] += n_diff
         for cons in gate[1]:
             cons[0] += n_diff
-    totalCost += cost
     resultGates.append(gates)
-
-    if showFlag:
-        # count and show
-        print("E2)", end="\t")
-        for num in nGates:
-            print(num, end="\t")
-        print()
 
     return resultGates
 
@@ -1312,11 +1254,36 @@ def alg_reduction_for_Left(n, sbox, parDepth):
 
     return resultGates , tSbox
 
+def apply_Qube_gates(n, sbox, gates):
+    # (n ~ 3)-bit
+    for i in range(0, len(gates[:-1]), 2):
+        # non- interrupting 
+        for gate in gates[i]:
+            sbox = apply_gate(n, sbox, gate)
+    
+        # decompising
+        for j in range(0, len(gates[i+1][:-1]), 2):
+            for gate in gates[i+1][j]:
+                sbox = apply_gate(n, sbox, gate)
+            for gate in gates[i+1][j+1]:
+                sbox = apply_gate(n, sbox, gate)
+        if gates[i+1][-1] != []:
+            sbox = apply_gate(n, sbox, gates[i+1][-1])
+
+    # 2-bits
+    for gate in gates[-1]:
+        sbox = apply_gate(n, sbox, gate)
+
+    return sbox
+
 ##############################
 # saving gates to .real
 ##############################
 def writeGate(n, gate):
     strResults = []
+
+    if gate == []:
+        return []
     
     if len(gate[1]) == 0:
         strResults.append("t1 x{}".format(n - gate[0]))
@@ -1354,7 +1321,7 @@ def writeRealFormat(n, gates, fname):
         fp.write(".garbage " + "-" * n + "\n")
         fp.write(".begin\n")
         
-        for i in range(0, len(gates[:-1]), 3):
+        for i in range(0, len(gates[:-1]), 2):
             # non- interrupting 
             for gate in gates[i]:
                 strGates = writeGate(n, gate)
@@ -1362,7 +1329,7 @@ def writeRealFormat(n, gates, fname):
                     fp.write(gate + "\n")
 
             # decompising
-            for j in range(0, len(gates[i+1]), 2):
+            for j in range(0, len(gates[i+1][:-1]), 2):
                 for gate in gates[i+1][j]:
                     strGates = writeGate(n, gate)
                     for gate in strGates:
@@ -1371,12 +1338,9 @@ def writeRealFormat(n, gates, fname):
                     strGates = writeGate(n, gate)
                     for gate in strGates:
                         fp.write(gate + "\n")
-
-            # parity
-            for gate in gates[i+2]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
+            strGates = writeGate(n, gates[i+1][-1])
+            for gate in strGates:
+                fp.write(gate + "\n")
 
         # 2-bits
         for gate in gates[-1]:
@@ -1385,3 +1349,73 @@ def writeRealFormat(n, gates, fname):
                     fp.write(gate + "\n")
         
         fp.write(".end")
+
+def show_Qube_gates(n, gates):
+    numTof = 0
+    numTofDecomp = [[] for i in range(n-2)]
+
+    print("\t", end="")
+    for i in range(n):
+        print("C{}X".format(i), end="\t")
+    print()
+
+    for i in range(0, len(gates[:-1]), 2):
+        # preprocessing
+        nGates = [0 for i in range(n)]
+        for gate in gates[i]:
+            nCons = len(gate[1])
+            if nCons > 1:
+                numTof += 2 * nCons - 3
+            nGates[nCons] += 1
+        
+        # preprocessing results print
+        print("P{})".format(n - int(i/2)), end="\t")
+        for num in nGates:
+            print(num, end="\t")
+        print()
+    
+        # decompising
+        nGates = [0 for i in range(n)]
+        for j in range(0, len(gates[i+1][:-1]), 2):
+            tempNum = 0
+            for gate in gates[i+1][j]:
+                nCons = len(gate[1])
+                if nCons > 1:
+                    tempNum += 2 * nCons - 3
+                nGates[nCons] += 1
+            for gate in gates[i+1][j+1]:
+                nCons = len(gate[1])
+                if nCons > 1:
+                    tempNum += 2 * nCons - 3
+                nGates[nCons] += 1
+            numTof += tempNum
+            numTofDecomp[int(i/2)].append(tempNum)
+        nGates[1] += 1
+
+        print("R{})".format(n - int(i/2)), end="\t")
+        for num in nGates:
+            print(num, end="\t")
+        print()
+
+    # 2-bits
+    nGates = [0 for i in range(n)]
+    for gate in gates[-1]:
+        nCons = len(gate[1])
+        if nCons > 1:
+            numTof += 2 * nCons - 3
+        nGates[nCons] += 1
+
+    print("E2)", end="\t")
+    for num in nGates:
+        print(num, end="\t")
+    print()
+
+    print("Number of Toffoli gate:", numTof)
+    #print()
+
+    #for i in range(len(numTofDecomp)):
+    #    print("{}-th decomp".format(n-i), end="\t")
+    #    temp = numTofDecomp[i] + [0]
+    #    for j in range(0, len(temp), 32):
+    #        if j != 0: print("\t\t", end="")
+    #        print(temp[j:j+32])
