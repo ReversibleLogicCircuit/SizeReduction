@@ -695,8 +695,8 @@ def alg_synthesis(n, sbox, depths, showFlag):
         for i in range(len(tempSbox)):
             tempSbox[i]= int(tSbox[2 * i] / 2)
         tSbox = tempSbox
-        print("P_{} -> P_{}".format(now_n, now_n-1))
-        print("P_{}:".format(now_n - 1), tSbox)   
+        #print("P_{} -> P_{}".format(now_n, now_n-1))
+        #print("P_{}:".format(now_n - 1), tSbox)   
 
     gates = alg_serach(tSbox)
 
