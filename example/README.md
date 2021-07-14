@@ -33,7 +33,7 @@ The image file {Example_out_circuit.bmp} is obtained by RCViewer+.
 
 ## Results on screen
 User will see something like below on the screen.
-Detailed cost on Mixing and preprocessing comes first, and then the cost on SizeReduction comes second in each step. E2 entry is for exhaustive search of last 2-bit permutation.
+Detailed costs on Mixing and Preprocessing come first, and then the costs on SizeReduction come second in each step. E2 entry is for exhaustive search of last 2-bit permutation.
 ```
 Tue Jul 13 15:33:57 2021
 Tue Jul 13 15:33:58 2021
