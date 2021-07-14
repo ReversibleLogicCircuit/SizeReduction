@@ -42,7 +42,7 @@ for step in gates:
         tpermutation = apply_gate(n, tpermutation, gate)
 # adjusting to the form of results
 resultsGates += [[]]
-resultsGates += [gates + []]
+resultsGates += [gates + [[]]]
 
 # bit size is reduced
 ttpermutation = list(range(2**(n-1)))
