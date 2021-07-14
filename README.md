@@ -20,9 +20,9 @@
 
 ## ./benchmark folder
 1. To reproduce the benchmark results in https://arxiv.org/abs/2107.04298: run the code with specified options given in README.md in the folder.
-2. See README.md for results with various d_n. 
+2. See README.md for results with various d_j. 
 </br>
 
 ## ./sboxes folder
 1. To reproduce the S-box circuits found by https://arxiv.org/abs/2107.04298: run the code with specified options given in README.md in the folder.
-2. See README.md for results with various d_n.
+2. See README.md for results with various d_j.
