@@ -40,3 +40,5 @@ Each entry reads (QC,#TOF)
 | nthprime10 | 30421, 4357   | 28630, 4003   |       -       |       -       |       -       |                        -                      |
 | nthprime11 | 69702, 10366  |       -       |       -       |       -       |       -       |                        -                      |
 | nthprime12 | 165945, 23992 |       -       |       -       |       -       |       -       |                        -                      |
+
+* Statistically, a large portion of functions benefits from large d_j, but it does not necessarily reduce the cost for a certain function.
