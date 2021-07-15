@@ -33,3 +33,4 @@ Each entry reads (QC,#TOF)
 |   DES-7    | 791, 109      | 791, 109      | 718, 101      | 781, 107      |       -       |            -             |
 |   DES-8    | 776, 104      | 805, 112      | 744, 100      | 726, 99       |       -       |            -             |
 
+* Statistically, a large portion of functions benefits from large d_j, but it does not necessarily reduce the cost for a certain function.
