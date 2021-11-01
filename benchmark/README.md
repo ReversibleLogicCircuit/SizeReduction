@@ -27,7 +27,7 @@ Some nthPrimes have small number of interrupting positions. To utilize it, we ha
 ## Results with various d_j  
 Each entry reads (QC,#TOF)  
 
-|  Functions |      d=0      |      d=1      |      d=2      |      d=3      |      d=4      |      d=5      |..., d_i =  ... |
+|  Functions |      d=0      |      d=1      |      d=2      |      d=3      |      d=4      |      d=5      |..., d_i = ,... |
 |    ----    |      ----     |     ----      |     ----      |     ----      |     ----      |     ----      |      ----                    |
 |    URF1    | 18223, 2805   | 13589, 2066   | 13318, 2029   | 12333, 1869   |       -       |       -       |        -                     |
 |    URF2    | 7305, 1085    | 5740, 845     | 5510, 803     | 5105, 738     | 4986, 720     |       -       |        -                     |
