@@ -38,4 +38,5 @@ Each entry reads (QC,#TOF)
 ## DES S-boxes
 DES S-boxes gets 6 inputs and returns 4 outputs and 2 garbages.
 Following circuits shows that first 2 outputs are garbages.
-<img src="./DES1_out.bmp" width="40%"/>
+
+<center><img src="./DES1_out.bmp" width="40%"/></center>
