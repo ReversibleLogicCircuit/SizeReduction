@@ -34,3 +34,7 @@ Each entry reads (QC,#TOF)
 |   DES-8    | 946, 135      | 776, 104      | 805, 112      | 744, 100      | 726, 99       | 737, 100      |            -             |
 
 * Statistically, a large portion of functions benefits from large d_j, but it does not necessarily reduce the cost for a certain function.
+
+## DES S-boxes
+DES S-boxes has 6 inputs and returns 4 outputs and 2 garbages.
+![circuit_for_example](./DES1_out.bmp)
