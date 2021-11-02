@@ -29,6 +29,7 @@ Search depth larger than the number of remaining row pairs is ignored for excess
 Once the program finishes, {example_out.real} will be generated.
 RCViewer+ (https://ceit.aut.ac.ir/QDA/RCV.htm) support REAL formats.
 The image file {Example_out_circuit.bmp} is obtained by RCViewer+.
+
 <img src="./Example_out_circuit.bmp" width="40%"/>
 
 ## Results on screen
