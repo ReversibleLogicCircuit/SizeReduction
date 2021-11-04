@@ -1,195 +1,314 @@
 from itertools import permutations
 from itertools import combinations
+from itertools import product
 import copy
 
-def sub_PICK(n, sbox, i):
-    m = bin(i + (1 << (n-1)))[3:].index("0") + 1
-    k = 0
-    for j in range(m):
-        k += 1 << (n-2-j)
-    
-    for j in range(k, (1 << n) - 1, 1):
-        a = sbox[j]
-        b = a ^ 1
-        for l in range(j+1, 1 << n, 1):
-            c = sbox[l]
-            
-            if b == c:
-                return (a,b)
+def alg_synthesis(n, sbox, depths):
+    resultGates = []
+    tSbox = sbox
+    totalCost = 0
 
-def sub_N_PICK(n, sbox, i):
-    m = bin(i + (1 << (n-1)))[3:].index("0") + 1
-    k = 0
-    for j in range(m):
-        k += 1 << (n-2-j)
-    
-    for j in range(k, (1 << n) - 1, 1):
-        a = sbox[j]            
-        b = a ^ 1        
-        if a & 1 != j & 1:
-            continue
-            
-        for l in range(j+1, 1 << n, 1):
-            c = sbox[l]
-            if b & 1 != l & 1:
-                continue
-            
-            if b == c:
-                return (a,b)
-            
-    for j in range(i << 1, (1 << n) - 1, 1):
-        a = sbox[j]
-        b = a ^ 1
+    for now_n in range(n, 2, -1):
+        # mixing
+        now_gates = alg_preprocessing(now_n, tSbox)
         
-        for l in range(j+1, 1 << n, 1):
-            c = sbox[l]
-            
-            if b == c:
-                return (a,b)
+        # apply
+        for now_gate in now_gates:
+            tSbox = apply_gate(now_n, tSbox, now_gate)
+            # adjusting gate
+            n_diff = n - now_n
+            now_gate[0] += n_diff
+            for cons in now_gate[1]:
+                cons[0] += n_diff
+        resultGates.append(now_gates)
 
-def sub_PRE_PICK(n, sbox, i):    
-    for j in range(i << 1, (1 << n) - 1, 1):
-        a = sbox[j]
-        if j & 1 != sbox.index(a ^ 1) & 1:
-            continue
-            
-        for l in range(j+1, 1 << n, 1):
-            b = sbox[l]
-            if l & 1 != sbox.index(b ^ 1) & 1:
-                continue
-            
-            if j & 1 != l & 1:
-                return (a,b)
+        # decomposition
+        now_gates = alg_reduction(now_n, tSbox, depths[n-now_n:])
+        
+        # apply
+        for step in now_gates[:-1]:
+            for now_gate in step:
+                tSbox = apply_gate(now_n, tSbox, now_gate)
+                # adjusting gate
+                n_diff = n - now_n
+                now_gate[0] += n_diff
+                for cons in now_gate[1]:
+                    cons[0] += n_diff
+        # adjusting gate for CX1n
+        n_diff = n - now_n
+        now_gates[-1][0] += n_diff
+        for cons in now_gates[-1][1]:
+            cons[0] += n_diff
+        resultGates.append(now_gates)
+        
+        # bit size is reduced
+        tempSbox = list(range(2**(now_n-1)))
+        for i in range(len(tempSbox)):
+            tempSbox[i]= int(tSbox[2 * i] / 2)
+        tSbox = tempSbox
+        #print("P_{} -> P_{} (=".format(now_n, now_n-1), tSbox, ")")
 
-def sub_CONS(n, index1, index2, cons):
-    gates = []
-    nextPos = next_position(n, cons)
-    rightPos = int(nextPos[:-1],2)
-    strStartDiff = bin((1<<n) + index1 ^ index2)[3:]
-    # guaranting index1 < index2
-    if index2 < index1:
-        temp = index2
-        index2 = index1
-        index1 = temp
-    
-    # already block case
-    if strStartDiff[:-1].count('1') == 0:
-        return gates
-    
-    # step 1. correcting a parity
-    if strStartDiff[-1] == '0':
-        intCon = strStartDiff[:-1].index('1') + 1
-        intTar = n
-        # making two rows is at normal position(for intterrupgint rows, normal-like position)
-        if bin((1<<n) + index2)[3:][-1] == '0':
-            gate = [n-intTar, [[n-intCon,int(bin((1<<n) + index2)[3:][intCon-1])]]]
+    gates = alg_serach(tSbox)
+
+    # apply
+    for gate in gates:
+        tSbox = apply_gate(2, tSbox, gate)
+        # adjusting gate
+        n_diff = n - 2
+        gate[0] += n_diff
+        for cons in gate[1]:
+            cons[0] += n_diff
+    resultGates.append(gates)
+
+    return resultGates
+
+# synthesis for 2 bits permutation
+def alg_serach(sbox):
+    # systhesis for 2-bit permutation
+    resultGates = []
+
+    cons = []
+    nList = list(range(1 << 2))
+    tSbox = sbox
+
+    result, costs, tSbox, cons, nList = makeBlock(2, 2, tSbox, cons, nList, [0,1])
+    for r in result:
+        for gate in r:
+            resultGates.append(gate)
+
+    options = returnOptions(2, tSbox)
+    paritySet = [op[1] for op in options]
+
+    if paritySet.count(1) == 1:
+        if tSbox[0] == 0:
+            gate = [2-2, [[2-1,1]]]
+            tSbox = apply_gate(2, tSbox, gate)
+            resultGates.append(gate)
         else:
-            gate = [n-intTar, [[n-intCon,int(bin((1<<n) + index1)[3:][intCon-1])]]]
-        gates.append(gate)
-        
-        index1 = gate_to_index(n, gate, index1)
-        index2 = gate_to_index(n, gate, index2)
+            gate = [2-2, [[2-1,0]]]
+            tSbox = apply_gate(2, tSbox, gate)
+            resultGates.append(gate)
+    elif paritySet.count(1) == 2:
+        gate = [2-2, []]
+        tSbox = apply_gate(2, tSbox, gate)
+        resultGates.append(gate)
 
-    # step 2. making different only two bit(including last bit)
-    strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
-    intCon = strNowDiff.index('1') + 1
+    return resultGates
 
-    # step 2-1. applying X gate depends on i
-    if nextPos[intCon - 1] == '1':
-        gate = [n-intCon, []]
-        gates.append(gate)
-
-        index1 = gate_to_index(n, gate, index1)
-        index2 = gate_to_index(n, gate, index2)
-
-    # step 2-2. applying CX gate whose conrol bit is first different bit
-    for i in range(strStartDiff[:-1].count('1') - 1):
-        strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
-        intTar = strNowDiff.index('1',intCon) + 1
-        gate = [n-intTar, [[n-intCon, 1]]]
-        gates.append(gate)
-
-        index1 = gate_to_index(n, gate, index1)
-        index2 = gate_to_index(n, gate, index2)
-
-    # step 2-3. applying X gate depends on i(repeating)
-    if nextPos[intCon - 1] == '1':
-        gate = [n-intCon, []]
-        gates.append(gate)
-
-        index1 = gate_to_index(n, gate, index1)
-        index2 = gate_to_index(n, gate, index2)
+def CNGates(n):
+    cans = combinations(list(range(n)), 2)
+    results = []
     
-    # step 3-1. applying C^{m}X gate (m = 1, ...)
-    strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
-    if len(cons) == 0 and strNowDiff.count('1') == 1:
-        intTar = strNowDiff.index('1') + 1
-        intCon = n        
-        gate = [n-intTar, [[n-intCon, 1]]]        
-        gates.append(gate)
-    else:
-        intTar = strNowDiff.index('1') + 1
+    for c in cans:
+        gate = [c[0], [[c[1],1]]]
+        results.append(gate)
+        gate = [c[0], [[c[1],0]]]
+        results.append(gate)
         
-        strCheckDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:] + '1' # last '1' is against empty case.
-        end = strCheckDiff.index('1') + 1
+        gate = [c[1], [[c[0],1]]]
+        results.append(gate)
+        gate = [c[1], [[c[0],0]]]
+        results.append(gate)
         
-        consList = [i+1 for i in range(0, end, 1) if nextPos[i] == '1']
-        
-        # generating proper gate
-        gate = [n-intTar, []]
-        for c in consList:
-            gate[1].append([n-c,1])
-        if nextPos.count('1') > len(consList):
-            gate[1].append([n-end, (index1 >> (n-end)) & 0x01])
-        gate[1].append([n-n, index2 & 0x01])
-        gates.append(gate)
-    
-    return gates
+    return results
 
-def sub_ALLOC(n, index1, index2, cons):
-    # index2 is not used
-    gates = []
-    nextPos = next_position(n, cons)
-    rightPos = int(nextPos[:-1],2)
-    strStartDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
+def CN_LastTargetGates(n):
+    cans = combinations(list(range(1,n,1)), 1)
+    results = []
     
-    if n == 2 and strStartDiff.count('1') == 1:
-        gate = [n-1, []]
-        gates.append(gate)
+    for c in cans:        
+        gate = [0, [[c[0],1]]]
+        results.append(gate)
+        gate = [0 ,[[c[0],0]]]
+        results.append(gate)
         
-        return gates
+    return results
+
+def TofGates(n):
+    cans = combinations(list(range(n)), 3)
+    results = []
     
-    # step 1. making different only one bit
-    for i in range(strStartDiff.count('1') - 1):
-        strNowDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
+    for c in cans:
+        gate = [c[0], [[c[1],1], [c[2],1]]]
+        results.append(gate)
+        gate = [c[0], [[c[1],0], [c[2],1]]]
+        results.append(gate)
+        gate = [c[0], [[c[1],1], [c[2],0]]]
+        results.append(gate)
+        gate = [c[0], [[c[1],0], [c[2],0]]]
+        results.append(gate)
         
-        intCon = strNowDiff.index('1') + 1
-        intTar = strNowDiff.index('1',intCon) + 1
+        gate = [c[1], [[c[2],1], [c[0],1]]]
+        results.append(gate)
+        gate = [c[1], [[c[2],0], [c[0],1]]]
+        results.append(gate)
+        gate = [c[1], [[c[2],1], [c[0],0]]]
+        results.append(gate)
+        gate = [c[1], [[c[2],0], [c[0],0]]]
+        results.append(gate)
         
-        tempCons = [con for con in cons if con[intCon - 1] != '-' and con[intTar - 1] != '-']
-        if tempCons == []:
-            val = 1
+        gate = [c[2], [[c[1],1], [c[0],1]]]
+        results.append(gate)
+        gate = [c[2], [[c[1],0], [c[0],1]]]
+        results.append(gate)
+        gate = [c[2], [[c[1],1], [c[0],0]]]
+        results.append(gate)
+        gate = [c[2], [[c[1],0], [c[0],0]]]
+        results.append(gate)
+
+    return results
+
+def Tof_LastTargetGates(n):
+    cans = combinations(list(range(1,n,1)), 2)
+    results = []
+    
+    for c in cans:
+        gate = [0, [[c[0],1], [c[1],1]]]
+        results.append(gate)
+        gate = [0, [[c[0],0], [c[1],1]]]
+        results.append(gate)
+        gate = [0, [[c[0],1], [c[1],0]]]
+        results.append(gate)
+        gate = [0, [[c[0],0], [c[1],0]]]
+        results.append(gate)
+
+    return results
+
+# 새로운 믹싱 함수
+def newMixing(n, sbox):
+    wannaNumCB = 1<<(n-2) if n > 2 else 2
+    
+    options = returnOptions(n, sbox)
+    paritySet = [op[1] for op in options]
+    #print(paritySet.count(0), paritySet.count(1), paritySet.count(2))
+    bestDiff = abs(wannaNumCB - paritySet.count(2))
+    bestGates = []
+    if paritySet.count(2) == wannaNumCB:
+        return []
+    
+    gates = CN_LastTargetGates(n)
+    for gate in gates:
+        tSbox = copy.deepcopy(sbox)
+        tSbox = apply_gate(n, tSbox, gate)
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+
+        if paritySet.count(2) == wannaNumCB:
+            return [gate]
+        elif bestDiff < abs(wannaNumCB - paritySet.count(2)):
+            bestDiff = abs(wannaNumCB - paritySet.count(2))
+            bestGates = [gate]
+
+    # C C
+    g1 = CNGates(n)
+    g2 = CN_LastTargetGates(n)
+    gates = product(g1, g2)
+    for gate in gates:
+        if gate[0] == gate[1]:
+            continue
+        tSbox = copy.deepcopy(sbox)
+        tSbox = apply_gate(n, tSbox, gate[0])
+        tSbox = apply_gate(n, tSbox, gate[1])
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+
+        if paritySet.count(2) == wannaNumCB:
+            return [gate[0], gate[1]]
+        elif bestDiff < abs(wannaNumCB - paritySet.count(2)):
+            bestDiff = abs(wannaNumCB - paritySet.count(2))
+            bestGates = [gate[0], gate[1]]
+
+    # C C C
+    g1 = CNGates(n)
+    g2 = CN_LastTargetGates(n)
+    gates = product(g1, g1, g2)
+    for gate in gates:
+        if gate[0] == gate[1] or gate[1] == gate[2]:
+            continue
+        tSbox = copy.deepcopy(sbox)
+        tSbox = apply_gate(n, tSbox, gate[0])
+        tSbox = apply_gate(n, tSbox, gate[1])
+        tSbox = apply_gate(n, tSbox, gate[2])
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+
+        if paritySet.count(2) == wannaNumCB:
+            return [gate[0], gate[1], gate[2]]
+        elif bestDiff < abs(wannaNumCB - paritySet.count(2)):
+            bestDiff = abs(wannaNumCB - paritySet.count(2))
+            bestGates = [gate[0], gate[1], gate[2]]
+
+    # C T
+    g1 = CNGates(n)
+    g2 = Tof_LastTargetGates(n)
+    gates = product(g1, g2)
+    for gate in gates:
+        tSbox = copy.deepcopy(sbox)
+        tSbox = apply_gate(n, tSbox, gate[0])
+        tSbox = apply_gate(n, tSbox, gate[1])
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+
+        if paritySet.count(2) == wannaNumCB:
+            return [gate[0], gate[1]]
+        elif bestDiff < abs(wannaNumCB - paritySet.count(2)):
+            bestDiff = abs(wannaNumCB - paritySet.count(2))
+            bestGates = [gate[0], gate[1]]
+
+    # T C
+    g1 = TofGates(n)
+    g2 = CN_LastTargetGates(n)
+    gates = product(g1, g2)
+    for gate in gates:
+        tSbox = copy.deepcopy(sbox)
+        tSbox = apply_gate(n, tSbox, gate[0])
+        tSbox = apply_gate(n, tSbox, gate[1])
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+
+        if paritySet.count(2) == wannaNumCB:
+            return [gate[0], gate[1]]
+        elif bestDiff < abs(wannaNumCB - paritySet.count(2)):
+            bestDiff = abs(wannaNumCB - paritySet.count(2))
+            bestGates = [gate[0], gate[1]]
+
+    # 안된 경우
+    if paritySet.count(2) != wannaNumCB and bestDiff == 2:
+        tSbox = copy.deepcopy(sbox)
+        for gate in bestGates:
+            tSbox = apply_gate(n, tSbox, gate)
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+        # setting a target
+        targets = []
+        if paritySet.count(2) < wannaNumCB:
+            # find proper one
+            for op in options:
+                if op[1] != 2:
+                    targets += op[0]
         else:
-            val = int(tempCons[0][intCon - 1]) ^ 1
-       
-        gate = [n-intTar, [[n-intCon, val]]]
-        gates.append(gate)
-        index1 = gate_to_index(n, gate, index1)
-            
-    # step 2. applying proper C^{m}X gate (m = 1, ...)
-    strNowDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
-    if strNowDiff.count('1') == 1:
-        intTar = strNowDiff.index('1') + 1
-        
-        consList = [intTar + i + 1 for i in range(len(nextPos[intTar:])) if nextPos[intTar:][i] == '1']
-        
-        gate = [n-intTar, []]
-        for con in consList:
-            gate[1].append([n-con, 1])
-        
-        gates.append(gate)
-    
-    return gates
+            # find proper one
+            for op in options:
+                if op[1] == 2:
+                    targets += op[0]
+
+        # setting a proper gate
+        gate = []
+        for i in range(0, 1 << n, 2):
+            if sbox[i] in targets and sbox[i+1] in targets:
+                gate = [n-n, []]
+                for j in range(n-1,0,-1):
+                    gate[1].append([j, (i >> j) & 1])
+                break
+
+        tSbox = apply_gate(n,tSbox,gate)
+        options = returnOptions(n, tSbox)
+        paritySet = [op[1] for op in options]
+        if paritySet.count(2) == wannaNumCB:
+            returnGates = bestGates + [gate]
+            return returnGates
+
+    return []
 
 def alg_mixing(n, sbox):
     wannaNumCB = 1<<(n-2) if n > 2 else 2 # since returnOptions() function return the half number of row, n-2 is right.
@@ -288,7 +407,10 @@ def alg_preprocessing(n, sbox):
     tSbox = sbox
     
     # step 1, mixing
-    gates = alg_mixing(n, sbox)
+    if n <= 12:
+        gates = alg_mixing(n, sbox)
+    else:
+        gates = newMixing(n, sbox)
     for gate in gates:
         tSbox = apply_gate(n, tSbox, gate)
         returnGates.append(gate)
@@ -486,311 +608,7 @@ def alg_preprocessing(n, sbox):
     
     return returnGates
 
-def alg_reduction_prime(n, sbox, parDepth):
-    nList = copy.deepcopy(sbox)
-    nList.sort()
-    tSbox = sbox
-    resultGates = []
-    
-    now_n = n
-    while now_n > 1:
-        # setting a conditions
-        cons = []
-        numMadeBlock = 0    # every block is constructed, numMadeBlock increase by one.
-
-        # When constructing a last 8-th block, 3 depth exhaustive searh is done for finding a feature.
-        if now_n == 4:
-            oddFlag = parityOfSbox(n, tSbox)
-            options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 3)
-            options = sorted(options, key=lambda fun: sum(fun[1]))
-
-            # results from exhaustive search is applied.
-            for now_rows in [options[0][0]] + options[0][3]:
-                result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
-                resultGates += result
-                numMadeBlock += 1
-
-            # 4-bit is decomposed.
-            now_n -= 1
-            continue
-
-        while numMadeBlock < (1 << (now_n - 2)):
-            now_parDepth = parDepth[n - now_n]  # setting a depth for now_n
-
-            # MAKELIST()
-            options = makeList_Full(n, now_n, tSbox, cons, nList, now_parDepth)
-
-            # CHOOSE()
-            now_rows = choose(n, options)
-
-            # constructing and allocating a block
-            result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
-            resultGates += result
-
-            numMadeBlock += 1
-
-            # break for depth exhaustive searh is done for finding a feature.
-            if now_n == 5 and numMadeBlock == 7:
-                break
-
-        # When constructing a last 9-th block, 4 depth exhaustive searh is done for finding a feature.
-        if now_n == 5 and numMadeBlock == 7:
-            oddFlag = parityOfSbox(n, tSbox)
-            options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 4)
-            options = sorted(options, key=lambda fun: sum(fun[1]))
-
-            # results from exhaustive search is applied.
-            result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, options[0][0])
-            resultGates += result
-
-            # after last 9-th block is constructed and allocated, now_n is reduced by one.
-            cons = []
-            now_n -= 1
-            numMadeBlock = 0
-
-            for now_rows in options[0][3]:
-                result, costs, tSbox, cons, nList = makeBlock(n, now_n, tSbox, cons, nList, now_rows)
-                resultGates += result
-                numMadeBlock += 1
-
-            # 4-bit is decomposed.
-            now_n -= 1
-            continue
-        
-        # reducing a bit
-        now_n -= 1
-
-    return resultGates
-
-# default - alg_reduction_for_Left() + alg_reduction_prime()
-def alg_reduction(n, sbox, parDepth):
-    resultGates = []
-
-    gates, tSbox = alg_reduction_for_Left(n, sbox, parDepth)
-    resultGates += gates
-
-    gates = alg_reduction_prime(n-1, tSbox[1 << (n-1):], parDepth)
-    for step in gates:
-        for gate in step:
-            # adjusting gate
-            if 0 in [c[0] for c in gate[1]]:
-                gate[1].append([n-1,1])
-    resultGates += gates
-
-    return resultGates + [[n-n, [[n-1,1]]]]
-
-# synthesis for 2 bits permutation
-def alg_serach(sbox):
-    # systhesis for 2-bit permutation
-    resultGates = []
-
-    cons = []
-    nList = list(range(1 << 2))
-    tSbox = sbox
-
-    result, costs, tSbox, cons, nList = makeBlock(2, 2, tSbox, cons, nList, [0,1])
-    for r in result:
-        for gate in r:
-            resultGates.append(gate)
-
-    options = returnOptions(2, tSbox)
-    paritySet = [op[1] for op in options]
-
-    if paritySet.count(1) == 1:
-        if tSbox[0] == 0:
-            gate = [2-2, [[2-1,1]]]
-            tSbox = apply_gate(2, tSbox, gate)
-            resultGates.append(gate)
-        else:
-            gate = [2-2, [[2-1,0]]]
-            tSbox = apply_gate(2, tSbox, gate)
-            resultGates.append(gate)
-    elif paritySet.count(1) == 2:
-        gate = [2-2, []]
-        tSbox = apply_gate(2, tSbox, gate)
-        resultGates.append(gate)
-
-    return resultGates
-
-# main function
-def alg_synthesis(n, sbox, depths):
-    resultGates = []
-    tSbox = sbox
-    totalCost = 0
-
-    for now_n in range(n, 2, -1):
-        # mixing
-        now_gates = alg_preprocessing(now_n, tSbox)
-        
-        # apply
-        for now_gate in now_gates:
-            tSbox = apply_gate(now_n, tSbox, now_gate)
-            # adjusting gate
-            n_diff = n - now_n
-            now_gate[0] += n_diff
-            for cons in now_gate[1]:
-                cons[0] += n_diff
-        resultGates.append(now_gates)
-
-        # decomposition
-        now_gates = alg_reduction(now_n, tSbox, depths[n-now_n:])
-        
-        # apply
-        for step in now_gates[:-1]:
-            for now_gate in step:
-                tSbox = apply_gate(now_n, tSbox, now_gate)
-                # adjusting gate
-                n_diff = n - now_n
-                now_gate[0] += n_diff
-                for cons in now_gate[1]:
-                    cons[0] += n_diff
-        # adjusting gate for CX1n
-        n_diff = n - now_n
-        now_gates[-1][0] += n_diff
-        for cons in now_gates[-1][1]:
-            cons[0] += n_diff
-        resultGates.append(now_gates)
-        
-        # bit size is reduced
-        tempSbox = list(range(2**(now_n-1)))
-        for i in range(len(tempSbox)):
-            tempSbox[i]= int(tSbox[2 * i] / 2)
-        tSbox = tempSbox
-        #print("P_{} -> P_{} (=".format(now_n, now_n-1), tSbox, ")")
-
-    gates = alg_serach(tSbox)
-
-    # apply
-    for gate in gates:
-        tSbox = apply_gate(2, tSbox, gate)
-        # adjusting gate
-        n_diff = n - 2
-        gate[0] += n_diff
-        for cons in gate[1]:
-            cons[0] += n_diff
-    resultGates.append(gates)
-
-    return resultGates
-
-############################################################################
-
-# gate example
-# X1 = [n-1, []]
-# C21 = [n-1, [[n-2,1]]], X2 C21 X2 = [n-1, [[n-2,0]]]
-def apply_gate(n, sbox, gate):
-    result = copy.deepcopy(sbox)
-    pos = [[n-gate[0]-1, '-']] # by decreasing one, it matches
-    for i in range(len(gate[1])):
-        pos.append([n-gate[1][i][0]-1, str(gate[1][i][1])])
-    pos = sorted(pos, key=lambda fun: fun[0])
-    for i in range(1,len(pos),1):
-        pos[i][0] -= i  # adjusting a postion
-    num = n - len(pos)
-    
-    for i in range(1 << num):
-        vals = bin((1 << num) + i)[3:]
-        tarNum = vals[:pos[0][0]] + pos[0][1]
-        for j in range(len(pos) - 1):
-            tarNum += vals[pos[j][0]:pos[j+1][0]]+ pos[j+1][1]
-        tarNum += vals[pos[-1][0]:]
-                
-        tarPos = tarNum.index("-")
-        num1 = int("0b" + tarNum[:tarPos] + "0" + tarNum[tarPos+1:], 2)
-        num2 = int("0b" + tarNum[:tarPos] + "1" + tarNum[tarPos+1:], 2)
-
-        temp = result[num1]
-        result[num1] = result[num2]
-        result[num2] = temp
-    
-    return result
-
-def gate_to_index(n, gate, index):
-    strIndex = bin((1<<n) + index)[3:]
-    flagActive = True
-    
-    for con in gate[1]:
-        if strIndex[n-con[0]-1] != str(con[1]):
-            flagActive = False
-            break
-    
-    if flagActive:
-        return index ^ (1<<(gate[0]))
-    else:
-        return index
-
-def conditions_and(n, cons):
-    result = ''
-    for i in range(n):
-        temp = '0'
-        flag = True
-        for con in cons:
-            if con[i] != '0':
-                flag = False
-                break
-        if flag == False:
-            result = result + '-'
-        else:
-            result = result + '0'
-    return result
-
-def check_block(n, cons, number_list, sbox):
-    result = []
-    for i in range(int(len(number_list) / 2)):
-        n1 = sbox.index(number_list[2*i + 0])
-        n2 = sbox.index(number_list[2*i + 1])
-        
-        if bin(2**n + n1)[3:-1] == bin(2**n + n2)[3:-1]:
-            result.append(sbox[n1])
-            result.append(sbox[n2])
-    return result
-
-def next_position(n, cons):
-    if cons == []:
-        return '0'*(n-1) + '-'
-    
-    target = cons[-1]
-    pos = target.index('-')
-    
-    result = target[:pos - 1] + '1' + ('0' * (n - pos - 1)) + '-'
-    
-    return result
-
-def cons_update(n, cons):
-    result = [c for c in cons]
-    
-    while len(result) > 1 and result[-1].count('-') == result[-2].count('-'):
-        c1 = result.pop()
-        c2 = result.pop()
-        
-        pos = c1.index('-')
-        
-        result.append(c1[:pos-1] + ('-' * (n-pos+1)))    
-    
-    return result
-
-def cons_back(n, cons):    
-    result = [c for c in cons]
-    
-    while result[-1].count('-') != 1:
-        pos = result[-1].index('-')
-        a = result[-1][:pos] + '0' + result[-1][pos+1:]
-        b = result[-1][:pos] + '1' + result[-1][pos+1:]
-        result = result[:-1] + [a] + [b]
-    
-    return result[:-1]
-
-def parity_check(n, cons, gate):
-    for con in cons:
-        flagNowNonActive = True
-        
-        for eachCons in gate[1]:
-            if (con[n-eachCons[0]-1] != '-') and (con[n-eachCons[0]-1] != str(eachCons[1])):
-                flagNowNonActive = False
-        
-        if flagNowNonActive:
-            return False
-        
-    return True
+#####################################################################################################################
 
 def returnOptions(n, sbox):
     options = []
@@ -900,22 +718,630 @@ def alg_mixingMore(n, sbox):
     
     return []
 
-def FBList(n, cons, number_list, sbox):
-    result = [[], []]
-    for i in range(int(len(number_list) / 2)):
-        n1 = sbox.index(number_list[2*i + 0])
-        n2 = sbox.index(number_list[2*i + 1])
+def read_spec_file(path):
+    result = []
+    
+    with open(path, "r") as fp:
+        data = fp.readlines()
         
-        if bin((1<<n) + n1)[3:-1] == bin((1<<n) + n2)[3:-1]:
-            if n1 % 2 == 0:
-                # even block
-                result[0].append(sbox[n1])
-                result[0].append(sbox[n2])
-            else:
-                # odd block
-                result[1].append(sbox[n1])
-                result[1].append(sbox[n2])
+    for d in data:
+        if d[0] in [".", "#"]:
+            continue
+            
+        result.append(int(d[:-1], 2))      
+        
     return result
+
+def writeGate(n, gate):
+    strResults = []
+
+    if gate == []:
+        return []
+    
+    if len(gate[1]) == 0:
+        strResults.append("t1 x{}".format(n - gate[0]))
+    else:
+        strGate = "t{} ".format(len(gate[1]) + 1)    
+        for c in gate[1]:
+            strGate += "x{} ".format(n - c[0])
+        strGate += "x{}".format(n - gate[0])
+
+        for c in gate[1]:
+            if c[1] == 0:
+                strResults.append("t1 x{}".format(n - c[0]))
+
+        strResults = strResults + [strGate] + strResults
+    
+    return strResults
+
+def writeRealFormat(n, gates, fname):
+    with open(fname, "w") as fp:
+        fp.write(".version 2.0\n")
+        fp.write(".numvars {}\n".format(n))
+        temp = ".variables "
+        for i in range(n):
+            temp += "x{} ".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        temp = ".inputs "
+        for i in range(n):
+            temp += "i{} ".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        temp = ".outputs "
+        for i in range(n):
+            temp += "o{} ".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        fp.write(".constants " + "-" * n + "\n")
+        fp.write(".garbage " + "-" * n + "\n")
+        fp.write(".begin\n")
+        
+        for i in range(0, len(gates[:-1]), 2):
+            # non- interrupting 
+            for gate in gates[i]:
+                strGates = writeGate(n, gate)
+                for gate in strGates:
+                    fp.write(gate + "\n")
+
+            # decompising
+            for j in range(0, len(gates[i+1][:-1]), 2):
+                for gate in gates[i+1][j]:
+                    strGates = writeGate(n, gate)
+                    for gate in strGates:
+                        fp.write(gate + "\n")
+                for gate in gates[i+1][j+1]:
+                    strGates = writeGate(n, gate)
+                    for gate in strGates:
+                        fp.write(gate + "\n")
+            strGates = writeGate(n, gates[i+1][-1])
+            for gate in strGates:
+                fp.write(gate + "\n")
+
+        # 2-bits
+        for gate in gates[-1]:
+                strGates = writeGate(n, gate)
+                for gate in strGates:
+                    fp.write(gate + "\n")
+        
+        fp.write(".end")
+
+def writeTFCGate(n, gate):
+    strResults = []
+
+    if gate == []:
+        return []
+    
+    if len(gate[1]) == 0:
+        strResults.append("t1 x{}".format(n - gate[0]))
+    else:
+        strGate = "t{} ".format(len(gate[1]) + 1)    
+        for c in gate[1]:
+            strGate += "x{},".format(n - c[0])
+        strGate += "x{}".format(n - gate[0])
+
+        for c in gate[1]:
+            if c[1] == 0:
+                strResults.append("t1 x{}".format(n - c[0]))
+
+        strResults = strResults + [strGate] + strResults
+    
+    return strResults
+
+def writeGates_to_TFCFormat(n, gates, fname):
+    with open(fname, "w") as fp:
+        temp = ".v "
+        for i in range(n):
+            temp += "x{},".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        temp = ".i "
+        for i in range(n):
+            temp += "i{},".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        temp = ".o "
+        for i in range(n):
+            temp += "o{},".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        fp.write("BEGIN\n")
+        
+        for i in range(0, len(gates), 1):
+            strGates = writeTFCGate(n, gates[i])
+            for gate in strGates:
+                fp.write(gate + "\n")
+        
+        fp.write("END")
+
+def writeGates_to_RealFormat(n, gates, fname):
+    with open(fname, "w") as fp:
+        fp.write(".version 2.0\n")
+        fp.write(".numvars {}\n".format(n))
+        temp = ".variables "
+        for i in range(n):
+            temp += "x{} ".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        temp = ".inputs "
+        for i in range(n):
+            temp += "i{} ".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        temp = ".outputs "
+        for i in range(n):
+            temp += "o{} ".format(i+1)
+        fp.write(temp[:-1] + "\n")
+        fp.write(".constants " + "-" * n + "\n")
+        fp.write(".garbage " + "-" * n + "\n")
+        fp.write(".begin\n")
+        
+        for i in range(0, len(gates), 1):
+            strGates = writeGate(n, gates[i])
+            for gate in strGates:
+                fp.write(gate + "\n")
+        
+        fp.write(".end")
+
+def convert_real_to_gates(path):
+    with open(path, "rb") as fp:
+        data = fp.readlines()
+    
+    n = 0
+    varDic = {}
+    gates = []
+    for line in data:
+        tempStr = line.decode("utf-8")
+
+        if tempStr[0] in [".", "#"]:
+            # below if should be activated only one time
+            if tempStr[:4] == ".var":
+                splited = tempStr.split(" ")
+                splited[-1] = splited[-1].replace("\n", "")
+                splited[-1] = splited[-1].replace("\r", "")
+                n = len(splited) - 1
+                for i in range(1, len(splited), 1):
+                    if splited[i] not in varDic.keys():
+                        varDic[splited[i]] = i
+                print(varDic)
+            continue
+
+        splited = tempStr.split(" ")
+        splited[-1] = splited[-1].replace("\n", "")
+        splited[-1] = splited[-1].replace("\r", "")
+        gate = [0, []]
+        gate[0] = n - varDic[splited[-1]]
+        for i in range(1, len(splited)-1, 1):
+            gate[1].append([n - varDic[splited[i]], 1])
+        gates.append(gate)
+    
+    return gates
+
+def show_Qube_gates(n, gates):
+    numTof = 0
+    numTofDecomp = [[] for i in range(n-2)]
+
+    print("\t", end="")
+    for i in range(n):
+        print("C{}X".format(i), end="\t")
+    print()
+
+    for i in range(0, len(gates[:-1]), 2):
+        # preprocessing
+        nGates = [0 for i in range(n)]
+        for gate in gates[i]:
+            nCons = len(gate[1])
+            if nCons > 1:
+                numTof += 2 * nCons - 3
+            nGates[nCons] += 1
+        
+        # preprocessing results print
+        print("P{})".format(n - int(i/2)), end="\t")
+        for num in nGates:
+            print(num, end="\t")
+        print()
+    
+        # decompising
+        nGates = [0 for i in range(n)]
+        for j in range(0, len(gates[i+1][:-1]), 2):
+            tempNum = 0
+            for gate in gates[i+1][j]:
+                nCons = len(gate[1])
+                if nCons > 1:
+                    tempNum += 2 * nCons - 3
+                nGates[nCons] += 1
+            for gate in gates[i+1][j+1]:
+                nCons = len(gate[1])
+                if nCons > 1:
+                    tempNum += 2 * nCons - 3
+                nGates[nCons] += 1
+            numTof += tempNum
+            numTofDecomp[int(i/2)].append(tempNum)
+        nGates[1] += 1
+
+        print("R{})".format(n - int(i/2)), end="\t")
+        for num in nGates:
+            print(num, end="\t")
+        print()
+
+    # 2-bits
+    nGates = [0 for i in range(n)]
+    for gate in gates[-1]:
+        nCons = len(gate[1])
+        if nCons > 1:
+            numTof += 2 * nCons - 3
+        nGates[nCons] += 1
+
+    print("E2)", end="\t")
+    for num in nGates:
+        print(num, end="\t")
+    print()
+
+    print("Number of Toffoli gate:", numTof)
+    print()
+
+    for i in range(len(numTofDecomp)):
+        print("{}-th decomp".format(n-i), end="\t")
+        temp = numTofDecomp[i] + [0]
+        for j in range(0, len(temp), 32):
+            if j != 0: print("\t\t", end="")
+            print(temp[j:j+32])
+
+# default - alg_reduction_for_Left() + alg_reduction_prime()
+def alg_reduction(n, sbox, parDepth):
+    resultGates = []
+
+    gates, tSbox = alg_reduction_for_Left(n, sbox, parDepth)
+    resultGates += gates
+
+    gates = alg_reduction_prime(n-1, tSbox[1 << (n-1):], parDepth)
+    for step in gates:
+        for gate in step:
+            # adjusting gate
+            if 0 in [c[0] for c in gate[1]]:
+                gate[1].append([n-1,1])
+    resultGates += gates
+
+    return resultGates + [[n-n, [[n-1,1]]]]
+
+def alg_reduction_for_Left(n, sbox, parDepth):
+    nList = list(range(1 <<  n))
+    tSbox = sbox
+    resultGates = []
+    cons = []
+    
+    now_n = n
+    while now_n > 1:
+        numMadeBlock = 0
+
+        # since half of block is already constructed and allocated, consider only lefted block.
+        while numMadeBlock < (2 ** (now_n - 3)):
+            now_parDepth = parDepth[n - now_n]
+
+            if now_parDepth != 0:
+                # 전수조사를 하는 경우
+                # 이전의 만들어진 코드에 의해 0이 입력시 depth=1로 전수조사 목록을 만듦
+                # 그래서 1인경우 -1을 해줘서 그 값을 입력
+                now_parDepth -= 1
+                # MAKELIST()
+                options = makeList_Half(n, n, tSbox, cons, nList, now_parDepth) # this function treats n-bit permutation, and thus now_n = n
+
+                # CHOOSE()
+                now_rows = choose(n, options)
+            else:
+                # 전수조사를 안하는 경우
+                for i in range(0, len(nList), 2):
+                    if tSbox.index(nList[i]) & 1 == 0:
+                        now_rows = [nList[i], nList[i + 1]]
+                        break
+
+            result, costs, tSbox, cons, nList = makeBlock(n, n, tSbox, cons, nList, now_rows) # this function treats n-bit permutation, and thus now_n = n
+            resultGates += result
+
+            numMadeBlock += 1
+        
+        now_n -= 1
+
+    return resultGates , tSbox
+
+def alg_reduction_prime(n, sbox, parDepth):
+    nList = copy.deepcopy(sbox)
+    nList.sort()
+    tSbox = sbox
+    resultGates = []
+    
+    now_n = n
+    while now_n > 1:
+        # setting a conditions
+        cons = []
+        numMadeBlock = 0    # every block is constructed, numMadeBlock increase by one.
+
+        # When constructing a last 8-th block, 3 depth exhaustive searh is done for finding a feature.
+        if now_n == 4:
+            oddFlag = parityOfSbox(n, tSbox)
+            options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 3)
+            options = sorted(options, key=lambda fun: sum(fun[1]))
+
+            # results from exhaustive search is applied.
+            for now_rows in [options[0][0]] + options[0][3]:
+                result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, now_rows)
+                resultGates += result
+                numMadeBlock += 1
+
+            # 4-bit is decomposed.
+            now_n -= 1
+            continue
+
+        while numMadeBlock < (1 << (now_n - 2)):
+            now_parDepth = parDepth[n - now_n]  # setting a depth for now_n
+
+            if now_parDepth != 0:
+                # 전수조사를 하는 경우
+                # 이전의 만들어진 코드에 의해 0이 입력시 depth=1로 전수조사 목록을 만듦
+                # 그래서 1인경우 -1을 해줘서 그 값을 입력
+                now_parDepth -= 1
+
+                # MAKELIST()
+                options = makeList_Full(n, now_n, tSbox, cons, nList, now_parDepth)
+
+                # CHOOSE()
+                now_rows = choose(n, options)
+            else:
+                # 전수조사를 안하는 경우
+                now_rows = [nList[0], nList[1]]
+
+            # constructing and allocating a block
+            result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, now_rows)
+            resultGates += result
+
+            numMadeBlock += 1
+
+            # break for depth exhaustive searh is done for finding a feature.
+            if now_n == 5 and numMadeBlock == 7:
+                break
+
+        # When constructing a last 9-th block, 4 depth exhaustive searh is done for finding a feature.
+        if now_n == 5 and numMadeBlock == 7:
+            oddFlag = parityOfSbox(n, tSbox)
+            options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 4)
+            options = sorted(options, key=lambda fun: sum(fun[1]))
+
+            # results from exhaustive search is applied.
+            result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, options[0][0])
+            resultGates += result
+
+            # after last 9-th block is constructed and allocated, now_n is reduced by one.
+            cons = []
+            now_n -= 1
+            numMadeBlock = 0
+
+            for now_rows in options[0][3]:
+                result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, now_rows)
+                resultGates += result
+                numMadeBlock += 1
+
+            # 4-bit is decomposed.
+            now_n -= 1
+            continue
+        
+        # reducing a bit
+        now_n -= 1
+
+    return resultGates
+
+def alg_reduction_nthPrime(n, sbox, parDepth):
+    # 해야할 것
+    # reduction left에서 odd로만 뭉치게 끔
+    # reduction right에서 odd로 몇개는 더 뭉치게 끔
+    resultGates = []
+
+    gates, tSbox = alg_reduction_for_Left_nthPrime(n, sbox, parDepth)
+    resultGates += gates
+
+    gates = alg_reduction_prime_nthPrime(n-1, tSbox[1 << (n-1):], parDepth)
+    for step in gates:
+        for gate in step:
+            # adjusting gate
+            if 0 in [c[0] for c in gate[1]]:
+                gate[1].append([n-1,1])
+    resultGates += gates
+
+    LastGate = []
+    if n in [8,9,10,11,12,16]:
+        LastGate = [[n-n, [[n-1,1]]]]
+    else:
+        LastGate = [[]]
+
+    return resultGates + LastGate
+
+def alg_reduction_for_Left_nthPrime(n, sbox, parDepth):
+    nList = list(range(1 <<  n))
+    tSbox = sbox
+    resultGates = []
+    cons = []
+    tNumBlock = 0
+    
+    now_n = n
+    while now_n > 1:
+        numMadeBlock = 0
+
+        # since half of block is already constructed and allocated, consider only lefted block.
+        while numMadeBlock < (2 ** (now_n - 3)):
+            now_parDepth = parDepth[n - now_n]
+
+            if now_parDepth != 0:
+                # 전수조사를 하는 경우
+                # 이전의 만들어진 코드에 의해 0이 입력시 depth=1로 전수조사 목록을 만듦
+                # 그래서 1인경우 -1을 해줘서 그 값을 입력
+                now_parDepth -= 1
+                # MAKELIST()
+                options = makeList_Half(n, n, tSbox, cons, nList, now_parDepth) # this function treats n-bit permutation, and thus now_n = n
+
+                # CHOOSE()
+                now_rows = choose(n, options)
+            else:
+                now_rows = []
+                for i in range(tNumBlock * 2, 1 << n, 2):
+                    if tSbox[i+1] - tSbox[i] == 1 and tSbox[i] & 1 == 0:
+                        now_rows = [tSbox[i], tSbox[i+1]]
+                        break
+                if now_rows == []:
+                    for i in range(0, len(nList), 2):
+                        if tSbox.index(nList[i]) & 1 == 0:
+                            now_rows = [nList[i], nList[i + 1]]
+                            break
+
+            result, costs, tSbox, cons, nList = makeBlock(n, n, tSbox, cons, nList, now_rows) # this function treats n-bit permutation, and thus now_n = n
+            resultGates += result
+
+            numMadeBlock += 1
+            tNumBlock += 1
+
+            if n == 13 and now_n == 8 and numMadeBlock == 30:
+                # nthPrime13의 경우 normal block이 34개 더 모자람
+                resultGates[-1].append([n-n, [[n-1,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,0], [n-8,1], [n-9,1], [n-10,1], [n-11,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,0], [n-8,1], [n-9,1], [n-10,1], [n-11,1]]])
+            elif n == 14 and now_n == 9 and numMadeBlock == 48:
+                # nthPrime14의 경우 normal block이 80개 더 모자람
+                resultGates[-1].append([n-n, [[n-1,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,0], [n-8,1], [n-9,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,0], [n-8,1], [n-9,1]]])
+            elif n == 15 and now_n == 9 and numMadeBlock == 45:
+                # nthPrime15의 경우 normal block이 83개 더 모자람
+                resultGates[-1].append([n-n, [[n-1,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,0], [n-9,1], [n-10,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,0], [n-9,1], [n-10,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,0], [n-9,1], [n-10,0], [n-11,1], [n-12,1]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,0], [n-9,1], [n-10,0], [n-11,1], [n-12,1]]])
+                resultGates[-1].append([n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,0], [n-9,1], [n-10,0], [n-11,1], [n-12,1], [n-13,0], [n-14,0]]])
+                tSbox = apply_gate(n, tSbox, [n-n, [[n-1,0], [n-2,1], [n-3,1], [n-4,1], [n-5,1], [n-6,1], [n-7,1], [n-8,0], [n-9,1], [n-10,0], [n-11,1], [n-12,1], [n-13,0], [n-14,0]]])
+        
+        now_n -= 1
+
+    return resultGates , tSbox
+
+def alg_reduction_prime_nthPrime(n, sbox, parDepth):
+    nList = copy.deepcopy(sbox)
+    nList.sort()
+    tSbox = sbox
+    resultGates = []
+    tNumBlock = 0
+    
+    now_n = n
+    while now_n > 1:
+        # setting a conditions
+        cons = []
+        numMadeBlock = 0    # every block is constructed, numMadeBlock increase by one.
+
+        # When constructing a last 8-th block, 3 depth exhaustive searh is done for finding a feature.
+        if now_n == 4:
+            oddFlag = parityOfSbox(n, tSbox)
+            options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 3)
+            options = sorted(options, key=lambda fun: sum(fun[1]))
+
+            # results from exhaustive search is applied.
+            for now_rows in [options[0][0]] + options[0][3]:
+                result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, now_rows)
+                resultGates += result
+                numMadeBlock += 1
+
+            # 4-bit is decomposed.
+            now_n -= 1
+            continue
+
+        while numMadeBlock < (1 << (now_n - 2)):
+            now_parDepth = parDepth[n - now_n]  # setting a depth for now_n
+
+            if now_parDepth != 0:
+                # 전수조사를 하는 경우
+                # 이전의 만들어진 코드에 의해 0이 입력시 depth=1로 전수조사 목록을 만듦
+                # 그래서 1인경우 -1을 해줘서 그 값을 입력
+                now_parDepth -= 1
+
+                # MAKELIST()
+                # nthPrime에 맞게 수정 해야됨
+                options = makeList_Full(n, now_n, tSbox, cons, nList, now_parDepth)
+
+                # CHOOSE()
+                now_rows = choose(n, options)
+            else:
+                #now_rows = [nList[0], nList[1]]
+                if (n == 7 and n == now_n and numMadeBlock < 7) or (n == 9 and n == now_n and numMadeBlock < 14) or (n == 11 and n == now_n and numMadeBlock < 3) or (n == 15 and n == now_n and numMadeBlock < 154):
+                    now_rows = []
+                    for i in range(tNumBlock * 2, 1 << n, 2):
+                        if tSbox[i+1] - tSbox[i] == 1 and tSbox[i] & 1 == 0:
+                            now_rows = [tSbox[i], tSbox[i+1]]
+                            break
+                    if now_rows == []:
+                        for i in range(0, len(nList), 2):
+                            if tSbox.index(nList[i]) & 1 == 0:
+                                now_rows = [nList[i], nList[i + 1]]
+                                break
+                else:
+                    now_rows = [nList[0], nList[1]]
+
+            # constructing and allocating a block
+            result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, now_rows)
+            resultGates += result
+
+            numMadeBlock += 1
+            tNumBlock += 1
+
+            if n == 7 and n == now_n and numMadeBlock == 7:
+                # nthPrime8에서 오른쪽의 경우 (7개의 블록은 even이고, 나머지는 odd)
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0]]])
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,1], [n-5,1], [n-6,1]]])
+            elif n == 9 and n == now_n and numMadeBlock == 14:
+                # nthPrime10에서 오른쪽의 경우 (14개의 블록은 even이고, 나머지는 odd)
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0]]])
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,1], [n-6,1], [n-7,1]]])
+            elif n == 11 and n == now_n and numMadeBlock == 3:
+                # nthPrime12에서 오른쪽의 경우 (3개의 블록은 even이고, 나머지는 odd)
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,0], [n-6,0], [n-7,0], [n-8,0]]])
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,0], [n-6,0], [n-7,0], [n-8,0], [n-9,1], [n-10,1]]])
+            elif n == 15 and n == now_n and numMadeBlock == 156:
+                # nthPrime16에서 오른쪽의 경우 (154개의 블록은 even이고, 나머지는 odd)
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,0], [n-6,0], [n-7,0], [n-8,0]]])
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,0], [n-6,0], [n-7,0], [n-8,1], [n-9,0], [n-10,0], [n-11,0]]])
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,0], [n-6,0], [n-7,0], [n-8,1], [n-9,0], [n-10,0], [n-11,1], [n-12,0]]])
+                resultGates[-1].append([n-n, [[n,1], [n-1,0], [n-2,0], [n-3,0], [n-4,0], [n-5,0], [n-6,0], [n-7,0], [n-8,1], [n-9,0], [n-10,0], [n-11,1], [n-12,1], [n-13,0], [n-14,0]]])
+
+            # break for depth exhaustive searh is done for finding a feature.
+            if now_n == 5 and numMadeBlock == 7:
+                break
+
+        # When constructing a last 9-th block, 4 depth exhaustive searh is done for finding a feature.
+        if now_n == 5 and numMadeBlock == 7:
+            oddFlag = parityOfSbox(n, tSbox)
+            options = makeList2_Full(n, now_n, tSbox, cons, nList, oddFlag, 4)
+            options = sorted(options, key=lambda fun: sum(fun[1]))
+
+            # results from exhaustive search is applied.
+            result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, options[0][0])
+            resultGates += result
+
+            # after last 9-th block is constructed and allocated, now_n is reduced by one.
+            cons = []
+            now_n -= 1
+            numMadeBlock = 0
+
+            for now_rows in options[0][3]:
+                result, costs, tSbox, cons, nList = makeBlock_Reduction(n, now_n, tSbox, cons, nList, now_rows)
+                resultGates += result
+                numMadeBlock += 1
+
+            # 4-bit is decomposed.
+            now_n -= 1
+            continue
+        
+        # reducing a bit
+        now_n -= 1
+
+    return resultGates
+
+#####################################################################################################################
 
 def parityOfSbox(n, sbox):
     wantForm = copy.deepcopy(sbox)
@@ -959,6 +1385,44 @@ def makeBlock(n, now_n, sbox, cons, nList, now_rows):
         sbox = apply_gate(n, sbox, gates[j])
         if len(gates[j][1]) > 1:
             costAL += 2 * len(gates[j][1]) - 3
+
+    # nList updates
+    indexRows = nList.index(now_rows[0])
+    nList = nList[:indexRows] + nList[indexRows+2:]
+
+    # cons updtaes
+    cons = cons_update(now_n, cons + [next_position(now_n, cons)])
+
+    return result, [costGB, costAL], sbox, cons, nList
+
+def makeBlock_Reduction(n, now_n, sbox, cons, nList, now_rows):
+    result = []
+    tSbox = sbox[-(1 << now_n):]
+
+    # constructing a block
+    gates = sub_CONS(now_n, tSbox.index(now_rows[0]), tSbox.index(now_rows[1]), cons)
+    for j in range(len(gates)):
+        tSbox = apply_gate(now_n, tSbox, gates[j])
+
+    if now_n != n and gates != []:
+        for j in range(n - now_n):
+            gates[-1][1].append([n - 1 - j,1]) # adjusting to appropriate gate
+    result.append(gates)
+    costGB = 0
+
+    for j in range(len(gates)):
+        if len(gates[j][1]) > 1:
+            costGB += 2 * len(gates[j][1]) - 3
+
+    # allocating a block
+    gates = sub_ALLOC(now_n, tSbox.index(now_rows[0]), tSbox.index(now_rows[1]), cons)
+    result.append(gates)
+    costAL = 0
+    for j in range(len(gates)):
+        tSbox = apply_gate(now_n, tSbox, gates[j])
+        if len(gates[j][1]) > 1:
+            costAL += 2 * len(gates[j][1]) - 3
+    sbox = sbox[:-(1 << now_n)] + tSbox
 
     # nList updates
     indexRows = nList.index(now_rows[0])
@@ -1014,6 +1478,23 @@ def choose(n, options):
     tempOps = sorted(tempOps, key=lambda fun: sum(fun[1]))               # sorting the qualities
 
     return tempOps[0][0]
+
+def FBList(n, cons, number_list, sbox):
+    result = [[], []]
+    for i in range(int(len(number_list) / 2)):
+        n1 = sbox.index(number_list[2*i + 0])
+        n2 = sbox.index(number_list[2*i + 1])
+        
+        if bin((1<<n) + n1)[3:-1] == bin((1<<n) + n2)[3:-1]:
+            if n1 % 2 == 0:
+                # even block
+                result[0].append(sbox[n1])
+                result[0].append(sbox[n2])
+            else:
+                # odd block
+                result[1].append(sbox[n1])
+                result[1].append(sbox[n2])
+    return result
 
 ##############################
 # depth exhaustive search 
@@ -1225,34 +1706,226 @@ def makeList_Half(n, now_n, sbox, cons, nList, depth):
 
     return options
 
-def alg_reduction_for_Left(n, sbox, parDepth):
-    nList = list(range(1 <<  n))
-    tSbox = sbox
-    resultGates = []
-    cons = []
+def sub_PICK(n, sbox, i):
+    m = bin(i + (1 << (n-1)))[3:].index("0") + 1
+    k = 0
+    for j in range(m):
+        k += 1 << (n-2-j)
     
-    now_n = n
-    while now_n > 1:
-        numMadeBlock = 0
+    for j in range(k, (1 << n) - 1, 1):
+        a = sbox[j]
+        b = a ^ 1
+        for l in range(j+1, 1 << n, 1):
+            c = sbox[l]
+            
+            if b == c:
+                return (a,b)
 
-        # since half of block is already constructed and allocated, consider only lefted block.
-        while numMadeBlock < (2 ** (now_n - 3)):
-            now_parDepth = parDepth[n - now_n]
-
-            # MAKELIST()
-            options = makeList_Half(n, n, tSbox, cons, nList, now_parDepth) # this function treats n-bit permutation, and thus now_n = n
-
-            # CHOOSE()
-            now_rows = choose(n, options)
-
-            result, costs, tSbox, cons, nList = makeBlock(n, n, tSbox, cons, nList, now_rows) # this function treats n-bit permutation, and thus now_n = n
-            resultGates += result
-
-            numMadeBlock += 1
+def sub_N_PICK(n, sbox, i):
+    m = bin(i + (1 << (n-1)))[3:].index("0") + 1
+    k = 0
+    for j in range(m):
+        k += 1 << (n-2-j)
+    
+    for j in range(k, (1 << n) - 1, 1):
+        a = sbox[j]            
+        b = a ^ 1        
+        if a & 1 != j & 1:
+            continue
+            
+        for l in range(j+1, 1 << n, 1):
+            c = sbox[l]
+            if b & 1 != l & 1:
+                continue
+            
+            if b == c:
+                return (a,b)
+            
+    for j in range(i << 1, (1 << n) - 1, 1):
+        a = sbox[j]
+        b = a ^ 1
         
-        now_n -= 1
+        for l in range(j+1, 1 << n, 1):
+            c = sbox[l]
+            
+            if b == c:
+                return (a,b)
 
-    return resultGates , tSbox
+def sub_PRE_PICK(n, sbox, i):    
+    for j in range(i << 1, (1 << n) - 1, 1):
+        a = sbox[j]
+        if j & 1 != sbox.index(a ^ 1) & 1:
+            continue
+            
+        for l in range(j+1, 1 << n, 1):
+            b = sbox[l]
+            if l & 1 != sbox.index(b ^ 1) & 1:
+                continue
+            
+            if j & 1 != l & 1:
+                return (a,b)
+
+def sub_CONS(n, index1, index2, cons):
+    gates = []
+    nextPos = next_position(n, cons)
+    rightPos = int(nextPos[:-1],2)
+    strStartDiff = bin((1<<n) + index1 ^ index2)[3:]
+    # guaranting index1 < index2
+    if index2 < index1:
+        temp = index2
+        index2 = index1
+        index1 = temp
+    
+    # already block case
+    if strStartDiff[:-1].count('1') == 0:
+        return gates
+    
+    # step 1. correcting a parity
+    if strStartDiff[-1] == '0':
+        intCon = strStartDiff[:-1].index('1') + 1
+        intTar = n
+        # making two rows is at normal position(for intterrupgint rows, normal-like position)
+        if bin((1<<n) + index2)[3:][-1] == '0':
+            gate = [n-intTar, [[n-intCon,int(bin((1<<n) + index2)[3:][intCon-1])]]]
+        else:
+            gate = [n-intTar, [[n-intCon,int(bin((1<<n) + index1)[3:][intCon-1])]]]
+        gates.append(gate)
+        
+        index1 = gate_to_index(n, gate, index1)
+        index2 = gate_to_index(n, gate, index2)
+
+    # step 2. making different only two bit(including last bit)
+    strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
+    intCon = strNowDiff.index('1') + 1
+
+    # step 2-1. applying X gate depends on i
+    if nextPos[intCon - 1] == '1':
+        gate = [n-intCon, []]
+        gates.append(gate)
+
+        index1 = gate_to_index(n, gate, index1)
+        index2 = gate_to_index(n, gate, index2)
+
+    # step 2-2. applying CX gate whose conrol bit is first different bit
+    for i in range(strStartDiff[:-1].count('1') - 1):
+        strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
+        intTar = strNowDiff.index('1',intCon) + 1
+        gate = [n-intTar, [[n-intCon, 1]]]
+        gates.append(gate)
+
+        index1 = gate_to_index(n, gate, index1)
+        index2 = gate_to_index(n, gate, index2)
+
+    # step 2-3. applying X gate depends on i(repeating)
+    if nextPos[intCon - 1] == '1':
+        gate = [n-intCon, []]
+        gates.append(gate)
+
+        index1 = gate_to_index(n, gate, index1)
+        index2 = gate_to_index(n, gate, index2)
+    
+    # step 3-1. applying C^{m}X gate (m = 1, ...)
+    strNowDiff = bin((1<<n) + index1 ^ index2)[3:-1]
+    if len(cons) == 0 and strNowDiff.count('1') == 1:
+        intTar = strNowDiff.index('1') + 1
+        intCon = n        
+        gate = [n-intTar, [[n-intCon, 1]]]        
+        gates.append(gate)
+    else:
+        intTar = strNowDiff.index('1') + 1
+        
+        strCheckDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:] + '1' # last '1' is against empty case.
+        end = strCheckDiff.index('1') + 1
+        
+        consList = [i+1 for i in range(0, end, 1) if nextPos[i] == '1']
+        
+        # generating proper gate
+        gate = [n-intTar, []]
+        for c in consList:
+            gate[1].append([n-c,1])
+        if nextPos.count('1') > len(consList):
+            gate[1].append([n-end, (index1 >> (n-end)) & 0x01])
+        gate[1].append([n-n, index2 & 0x01])
+        gates.append(gate)
+    
+    return gates
+
+def sub_ALLOC(n, index1, index2, cons):
+    # index2 is not used
+    gates = []
+    nextPos = next_position(n, cons)
+    rightPos = int(nextPos[:-1],2)
+    strStartDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
+    
+    if n == 2 and strStartDiff.count('1') == 1:
+        gate = [n-1, []]
+        gates.append(gate)
+        
+        return gates
+    
+    # step 1. making different only one bit
+    for i in range(strStartDiff.count('1') - 1):
+        strNowDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
+        
+        intCon = strNowDiff.index('1') + 1
+        intTar = strNowDiff.index('1',intCon) + 1
+        
+        tempCons = [con for con in cons if con[intCon - 1] != '-' and con[intTar - 1] != '-']
+        if tempCons == []:
+            val = 1
+        else:
+            val = int(tempCons[0][intCon - 1]) ^ 1
+       
+        gate = [n-intTar, [[n-intCon, val]]]
+        gates.append(gate)
+        index1 = gate_to_index(n, gate, index1)
+            
+    # step 2. applying proper C^{m}X gate (m = 1, ...)
+    strNowDiff = bin((1<<(n-1)) + rightPos ^ int(index1 >> 1))[3:]
+    if strNowDiff.count('1') == 1:
+        intTar = strNowDiff.index('1') + 1
+        
+        consList = [intTar + i + 1 for i in range(len(nextPos[intTar:])) if nextPos[intTar:][i] == '1']
+        
+        gate = [n-intTar, []]
+        for con in consList:
+            gate[1].append([n-con, 1])
+        
+        gates.append(gate)
+    
+    return gates
+
+#####################################################################################################################
+
+# gate example
+# X1 = [n-1, []]
+# C21 = [n-1, [[n-2,1]]], X2 C21 X2 = [n-1, [[n-2,0]]]
+def apply_gate(n, sbox, gate):
+    result = copy.deepcopy(sbox)
+    pos = [[n-gate[0]-1, '-']] # by decreasing one, it matches
+    for i in range(len(gate[1])):
+        pos.append([n-gate[1][i][0]-1, str(gate[1][i][1])])
+    pos = sorted(pos, key=lambda fun: fun[0])
+    for i in range(1,len(pos),1):
+        pos[i][0] -= i  # adjusting a postion
+    num = n - len(pos)
+    
+    for i in range(1 << num):
+        vals = bin((1 << num) + i)[3:]
+        tarNum = vals[:pos[0][0]] + pos[0][1]
+        for j in range(len(pos) - 1):
+            tarNum += vals[pos[j][0]:pos[j+1][0]]+ pos[j+1][1]
+        tarNum += vals[pos[-1][0]:]
+                
+        tarPos = tarNum.index("-")
+        num1 = int("0b" + tarNum[:tarPos] + "0" + tarNum[tarPos+1:], 2)
+        num2 = int("0b" + tarNum[:tarPos] + "1" + tarNum[tarPos+1:], 2)
+
+        temp = result[num1]
+        result[num1] = result[num2]
+        result[num2] = temp
+    
+    return result
 
 def apply_Qube_gates(n, sbox, gates):
     # (n ~ 3)-bit
@@ -1276,146 +1949,67 @@ def apply_Qube_gates(n, sbox, gates):
 
     return sbox
 
-##############################
-# saving gates to .real
-##############################
-def writeGate(n, gate):
-    strResults = []
-
-    if gate == []:
-        return []
-    
-    if len(gate[1]) == 0:
-        strResults.append("t1 x{}".format(n - gate[0]))
-    else:
-        strGate = "t{} ".format(len(gate[1]) + 1)    
-        for c in gate[1]:
-            strGate += "x{} ".format(n - c[0])
-        strGate += "x{}".format(n - gate[0])
-
-        for c in gate[1]:
-            if c[1] == 0:
-                strResults.append("t1 x{}".format(n - c[0]))
-
-        strResults = strResults + [strGate] + strResults
-    
-    return strResults
-
-def writeRealFormat(n, gates, fname):
-    with open(fname, "w") as fp:
-        fp.write(".version 2.0\n")
-        fp.write(".numvars {}\n".format(n))
-        temp = ".variables "
-        for i in range(n):
-            temp += "x{} ".format(i+1)
-        fp.write(temp[:-1] + "\n")
-        temp = ".inputs "
-        for i in range(n):
-            temp += "i{} ".format(i+1)
-        fp.write(temp[:-1] + "\n")
-        temp = ".outputs "
-        for i in range(n):
-            temp += "o{} ".format(i+1)
-        fp.write(temp[:-1] + "\n")
-        fp.write(".constants " + "-" * n + "\n")
-        fp.write(".garbage " + "-" * n + "\n")
-        fp.write(".begin\n")
-        
-        for i in range(0, len(gates[:-1]), 2):
-            # non- interrupting 
-            for gate in gates[i]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-
-            # decompising
-            for j in range(0, len(gates[i+1][:-1]), 2):
-                for gate in gates[i+1][j]:
-                    strGates = writeGate(n, gate)
-                    for gate in strGates:
-                        fp.write(gate + "\n")
-                for gate in gates[i+1][j+1]:
-                    strGates = writeGate(n, gate)
-                    for gate in strGates:
-                        fp.write(gate + "\n")
-            strGates = writeGate(n, gates[i+1][-1])
-            for gate in strGates:
-                fp.write(gate + "\n")
-
-        # 2-bits
-        for gate in gates[-1]:
-                strGates = writeGate(n, gate)
-                for gate in strGates:
-                    fp.write(gate + "\n")
-        
-        fp.write(".end")
-
-def show_Qube_gates(n, gates):
-    numTof = 0
-    numTofDecomp = [[] for i in range(n-2)]
-
-    print("\t", end="")
+def conditions_and(n, cons):
+    result = ''
     for i in range(n):
-        print("C{}X".format(i), end="\t")
-    print()
+        temp = '0'
+        flag = True
+        for con in cons:
+            if con[i] != '0':
+                flag = False
+                break
+        if flag == False:
+            result = result + '-'
+        else:
+            result = result + '0'
+    return result
 
-    for i in range(0, len(gates[:-1]), 2):
-        # preprocessing
-        nGates = [0 for i in range(n)]
-        for gate in gates[i]:
-            nCons = len(gate[1])
-            if nCons > 1:
-                numTof += 2 * nCons - 3
-            nGates[nCons] += 1
-        
-        # preprocessing results print
-        print("P{})".format(n - int(i/2)), end="\t")
-        for num in nGates:
-            print(num, end="\t")
-        print()
+def cons_update(n, cons):
+    result = [c for c in cons]
     
-        # decompising
-        nGates = [0 for i in range(n)]
-        for j in range(0, len(gates[i+1][:-1]), 2):
-            tempNum = 0
-            for gate in gates[i+1][j]:
-                nCons = len(gate[1])
-                if nCons > 1:
-                    tempNum += 2 * nCons - 3
-                nGates[nCons] += 1
-            for gate in gates[i+1][j+1]:
-                nCons = len(gate[1])
-                if nCons > 1:
-                    tempNum += 2 * nCons - 3
-                nGates[nCons] += 1
-            numTof += tempNum
-            numTofDecomp[int(i/2)].append(tempNum)
-        nGates[1] += 1
+    while len(result) > 1 and result[-1].count('-') == result[-2].count('-'):
+        c1 = result.pop()
+        c2 = result.pop()
+        
+        pos = c1.index('-')
+        
+        result.append(c1[:pos-1] + ('-' * (n-pos+1)))    
+    
+    return result
 
-        print("R{})".format(n - int(i/2)), end="\t")
-        for num in nGates:
-            print(num, end="\t")
-        print()
+# unsed
+def cons_back(n, cons):    
+    result = [c for c in cons]
+    
+    while result[-1].count('-') != 1:
+        pos = result[-1].index('-')
+        a = result[-1][:pos] + '0' + result[-1][pos+1:]
+        b = result[-1][:pos] + '1' + result[-1][pos+1:]
+        result = result[:-1] + [a] + [b]
+    
+    return result[:-1]
 
-    # 2-bits
-    nGates = [0 for i in range(n)]
-    for gate in gates[-1]:
-        nCons = len(gate[1])
-        if nCons > 1:
-            numTof += 2 * nCons - 3
-        nGates[nCons] += 1
+def next_position(n, cons):
+    if cons == []:
+        return '0'*(n-1) + '-'
+    
+    target = cons[-1]
+    pos = target.index('-')
+    
+    result = target[:pos - 1] + '1' + ('0' * (n - pos - 1)) + '-'
+    
+    return result
 
-    print("E2)", end="\t")
-    for num in nGates:
-        print(num, end="\t")
-    print()
-
-    print("Number of Toffoli gate:", numTof)
-    #print()
-
-    #for i in range(len(numTofDecomp)):
-    #    print("{}-th decomp".format(n-i), end="\t")
-    #    temp = numTofDecomp[i] + [0]
-    #    for j in range(0, len(temp), 32):
-    #        if j != 0: print("\t\t", end="")
-    #        print(temp[j:j+32])
+def gate_to_index(n, gate, index):
+    strIndex = bin((1<<n) + index)[3:]
+    flagActive = True
+    
+    for con in gate[1]:
+        if strIndex[n-con[0]-1] != str(con[1]):
+            flagActive = False
+            break
+    
+    if flagActive:
+        return index ^ (1<<(gate[0]))
+    else:
+        return index

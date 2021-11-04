@@ -27,35 +27,35 @@ depths = [0 for i in range(20)]
 for i in range(len(args.depths)):
     depths[i] = args.depths[i]
 if len(args.depths) != 0:
-    for i in range(len(args.depths), n+1, 1):
+    for i in range(len(args.depths), n, 1):
         depths[i] = depths[len(args.depths) - 1]
 
 # synthesis for reversible logic circuit
 print(time.strftime("%c", time.localtime(time.time())))
 resultsGates = []
 
-# Since URF5 only has rows at normal position, it is reduced with function alg_reduction_prime().
-gates = alg_reduction_prime(n, permutation, depths)
 tpermutation = copy.deepcopy(permutation)
-for step in gates:
+gates = alg_reduction_nthPrime(n, tpermutation, depths)
+for step in gates[:-1]:
     for gate in step:
         tpermutation = apply_gate(n, tpermutation, gate)
-# adjusting to the form of results
+if gates[-1] != []:
+    tpermutation = apply_gate(n, tpermutation, gates[-1])
 resultsGates += [[]]
-resultsGates += [gates + [[]]]
+resultsGates += [gates]
 
-# bit size is reduced
+# 1-bit 낮추기
 ttpermutation = list(range(2**(n-1)))
 for i in range(len(ttpermutation)):
     ttpermutation[i]= int(tpermutation[2 * i] / 2)
 tpermutation = ttpermutation
 
 # 한 비트 줄인거 synthesis
-gates = alg_synthesis(n-1, tpermutation, depths[2:])
+gates = alg_synthesis(n-1, tpermutation, depths[1:])
 
 # adjusting gates
 for i in range(0, len(gates[:-1]), 2):
-    # preprecessing
+    # mixing
     for gate in gates[i]:
         n_diff = 1
         gate[0] += n_diff
