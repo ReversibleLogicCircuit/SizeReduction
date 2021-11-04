@@ -1,0 +1,2370 @@
+.version 2.0
+.numvars 9
+.variables x1 x2 x3 x4 x5 x6 x7 x8 x9
+.inputs i1 i2 i3 i4 i5 i6 i7 i8 i9
+.outputs o1 o2 o3 o4 o5 o6 o7 o8 o9
+.constants ---------
+.garbage ---------
+.begin
+t2 x7 x8
+t2 x8 x7
+t2 x6 x7
+t2 x7 x6
+t2 x5 x6
+t2 x6 x5
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t2 x5 x1
+t2 x7 x6
+t1 x7
+t1 x7
+t2 x7 x6
+t2 x7 x6
+t1 x7
+t1 x7
+t2 x7 x6
+t2 x7 x6
+t1 x7
+t1 x5
+t2 x7 x6
+t2 x5 x6
+t2 x6 x5
+t2 x5 x6
+t3 x6 x7 x5
+t2 x7 x8
+t2 x8 x7
+t2 x6 x7
+t2 x6 x8
+t2 x7 x6
+t3 x1 x9 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t5 x3 x4 x5 x6 x1
+t1 x8
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x7
+t2 x1 x8
+t2 x2 x1
+t2 x3 x7
+t2 x3 x8
+t2 x8 x3
+t2 x3 x5
+t2 x7 x3
+t2 x3 x4
+t2 x3 x8
+t2 x6 x3
+t2 x7 x8
+t2 x8 x7
+t2 x3 x4
+t2 x3 x5
+t2 x3 x7
+t2 x3 x8
+t3 x6 x7 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x5 x3
+t2 x8 x6
+t2 x3 x4
+t2 x3 x5
+t2 x3 x8
+t3 x5 x7 x3
+t2 x4 x6
+t3 x5 x6 x4
+t2 x8 x7
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x4 x8
+t4 x5 x6 x7 x4
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t2 x4 x3
+t2 x5 x6
+t2 x5 x8
+t2 x8 x5
+t2 x5 x7
+t2 x7 x5
+t2 x6 x8
+t3 x7 x8 x6
+t2 x3 x4
+t2 x3 x6
+t3 x4 x6 x3
+t2 x6 x8
+t1 x6
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t4 x4 x5 x7 x3
+t2 x3 x4
+t2 x3 x6
+t2 x3 x8
+t4 x4 x5 x6 x3
+t2 x8 x7
+t2 x3 x4
+t2 x3 x5
+t2 x3 x8
+t5 x4 x5 x6 x7 x3
+t2 x5 x6
+t2 x5 x8
+t1 x5
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x4 x8
+t2 x8 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x4 x8
+t2 x7 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x4 x8
+t1 x9
+t3 x1 x9 x4
+t1 x9
+t4 x2 x3 x6 x1
+t2 x8 x7
+t2 x4 x7
+t3 x6 x7 x4
+t2 x1 x2
+t2 x1 x5
+t2 x1 x6
+t4 x2 x3 x5 x1
+t2 x8 x7
+t2 x1 x3
+t2 x1 x5
+t2 x1 x7
+t5 x2 x3 x4 x9 x1
+t2 x4 x7
+t3 x5 x7 x4
+t2 x4 x5
+t2 x4 x7
+t2 x4 x8
+t3 x5 x6 x4
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t6 x2 x3 x5 x6 x8 x1
+t1 x5
+t2 x5 x7
+t1 x5
+t1 x9
+t3 x1 x9 x5
+t1 x9
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t2 x1 x8
+t6 x2 x3 x5 x6 x7 x1
+t2 x1 x2
+t2 x1 x3
+t2 x1 x8
+t4 x2 x3 x4 x1
+t2 x1 x4
+t5 x2 x3 x4 x8 x1
+t1 x4
+t2 x4 x6
+t2 x4 x8
+t1 x4
+t1 x9
+t3 x1 x9 x4
+t1 x9
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t5 x2 x3 x4 x7 x1
+t1 x4
+t2 x4 x7
+t2 x4 x8
+t1 x4
+t1 x9
+t3 x1 x9 x4
+t1 x9
+t2 x1 x2
+t2 x1 x4
+t2 x1 x6
+t2 x1 x7
+t2 x1 x8
+t5 x2 x3 x4 x6 x1
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t1 x9
+t6 x2 x3 x4 x5 x9 x1
+t1 x9
+t3 x6 x8 x5
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x8
+t6 x2 x3 x4 x6 x7 x1
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t5 x2 x3 x4 x5 x1
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x7
+t6 x2 x3 x4 x5 x8 x1
+t1 x3
+t2 x3 x4
+t2 x3 x8
+t1 x3
+t1 x9
+t3 x1 x9 x3
+t1 x9
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t2 x1 x7
+t6 x2 x3 x4 x5 x7 x1
+t2 x6 x8
+t3 x7 x8 x6
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x7
+t2 x1 x8
+t6 x2 x3 x4 x5 x6 x1
+t1 x2
+t2 x2 x7
+t1 x2
+t3 x1 x9 x2
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x8
+t7 x2 x3 x4 x5 x6 x8 x1
+t1 x4
+t2 x4 x6
+t2 x4 x7
+t1 x4
+t3 x1 x9 x4
+t2 x1 x4
+t2 x1 x7
+t2 x1 x8
+t7 x2 x3 x4 x5 x6 x7 x1
+t2 x2 x6
+t2 x2 x7
+t3 x9 x1 x2
+t2 x4 x8
+t1 x4
+t2 x3 x4
+t2 x3 x6
+t2 x3 x7
+t2 x8 x3
+t2 x2 x6
+t2 x7 x2
+t2 x2 x6
+t2 x2 x8
+t3 x7 x8 x2
+t2 x5 x6
+t2 x5 x7
+t2 x5 x8
+t1 x9
+t4 x4 x9 x1 x5
+t1 x9
+t2 x4 x7
+t2 x4 x8
+t2 x6 x4
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t2 x2 x8
+t4 x3 x9 x1 x2
+t2 x3 x4
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t3 x6 x7 x3
+t2 x2 x5
+t2 x2 x6
+t2 x5 x2
+t2 x3 x5
+t2 x3 x6
+t4 x4 x9 x1 x3
+t2 x4 x5
+t2 x4 x6
+t3 x5 x8 x4
+t2 x3 x5
+t2 x3 x6
+t1 x9
+t4 x2 x9 x1 x3
+t1 x9
+t2 x2 x6
+t2 x2 x7
+t3 x5 x7 x2
+t2 x2 x6
+t2 x2 x7
+t2 x2 x8
+t3 x5 x6 x2
+t2 x3 x5
+t2 x3 x8
+t4 x2 x9 x1 x3
+t4 x5 x6 x8 x2
+t2 x4 x6
+t2 x4 x8
+t4 x2 x9 x1 x4
+t2 x2 x7
+t4 x5 x6 x7 x2
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t2 x4 x3
+t2 x2 x6
+t2 x2 x7
+t4 x3 x9 x1 x2
+t2 x3 x4
+t2 x3 x7
+t3 x4 x8 x3
+t2 x5 x6
+t2 x5 x8
+t2 x7 x5
+t2 x2 x3
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t4 x4 x7 x8 x2
+t2 x2 x4
+t2 x2 x5
+t3 x4 x6 x2
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t1 x4
+t4 x2 x9 x1 x4
+t2 x2 x3
+t2 x2 x4
+t2 x2 x8
+t4 x4 x6 x8 x2
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x8
+t1 x4
+t1 x9
+t4 x2 x9 x1 x4
+t1 x9
+t2 x2 x3
+t2 x2 x4
+t2 x2 x7
+t4 x4 x6 x7 x2
+t2 x6 x8
+t1 x6
+t2 x2 x4
+t2 x2 x5
+t4 x4 x5 x8 x2
+t2 x2 x3
+t2 x2 x7
+t4 x3 x9 x1 x2
+t2 x3 x5
+t2 x3 x6
+t2 x3 x8
+t4 x4 x5 x7 x3
+t2 x6 x8
+t3 x7 x8 x6
+t2 x3 x4
+t4 x4 x5 x6 x3
+t2 x2 x5
+t2 x2 x6
+t2 x2 x8
+t5 x4 x5 x6 x8 x2
+t2 x3 x4
+t2 x3 x8
+t1 x9
+t4 x2 x9 x1 x3
+t1 x9
+t2 x2 x4
+t2 x2 x7
+t2 x2 x8
+t5 x4 x5 x6 x7 x2
+t2 x2 x3
+t2 x2 x7
+t4 x3 x9 x1 x2
+t2 x5 x6
+t1 x5
+t2 x2 x3
+t2 x2 x5
+t3 x3 x8 x2
+t2 x4 x6
+t2 x7 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x8
+t3 x7 x8 x4
+t2 x7 x8
+t1 x9
+t4 x2 x9 x1 x7
+t1 x9
+t2 x2 x3
+t2 x2 x4
+t3 x3 x6 x2
+t2 x4 x5
+t3 x6 x8 x4
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x7
+t2 x2 x8
+t5 x3 x5 x9 x1 x2
+t2 x5 x6
+t3 x6 x7 x5
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t5 x3 x6 x7 x8 x2
+t1 x8
+t2 x6 x8
+t2 x8 x6
+t6 x3 x5 x6 x9 x1 x8
+t2 x6 x7
+t2 x7 x6
+t1 x8
+t1 x3
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t1 x3
+t4 x2 x9 x1 x3
+t2 x2 x3
+t2 x2 x5
+t2 x2 x6
+t5 x3 x5 x6 x8 x2
+t2 x2 x3
+t2 x2 x5
+t5 x3 x5 x6 x7 x2
+t1 x3
+t2 x3 x5
+t2 x3 x6
+t2 x3 x8
+t1 x3
+t1 x9
+t4 x2 x9 x1 x3
+t1 x9
+t2 x2 x3
+t2 x2 x8
+t3 x3 x4 x2
+t2 x5 x6
+t2 x5 x8
+t2 x8 x5
+t2 x2 x4
+t2 x2 x5
+t2 x2 x7
+t2 x2 x8
+t4 x3 x4 x7 x2
+t1 x4
+t2 x4 x6
+t2 x4 x7
+t2 x4 x8
+t1 x4
+t1 x9
+t4 x2 x9 x1 x4
+t1 x9
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x7
+t5 x3 x4 x7 x8 x2
+t2 x2 x5
+t4 x3 x4 x6 x2
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t2 x2 x7
+t2 x2 x8
+t1 x9
+t6 x3 x4 x5 x9 x1 x2
+t1 x9
+t2 x5 x7
+t3 x6 x8 x5
+t1 x8
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t2 x2 x8
+t6 x3 x4 x6 x7 x8 x2
+t1 x3
+t2 x3 x4
+t2 x3 x6
+t2 x3 x8
+t1 x3
+t4 x2 x9 x1 x3
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t4 x3 x4 x5 x2
+t2 x6 x8
+t2 x8 x6
+t1 x7
+t2 x7 x8
+t1 x7
+t4 x2 x9 x1 x7
+t2 x2 x5
+t2 x2 x7
+t2 x2 x8
+t5 x3 x4 x5 x7 x2
+t2 x2 x4
+t2 x2 x6
+t2 x2 x7
+t2 x2 x8
+t5 x3 x4 x5 x6 x2
+t1 x4
+t2 x4 x6
+t1 x4
+t4 x2 x9 x1 x4
+t2 x2 x4
+t2 x2 x5
+t6 x3 x4 x5 x6 x8 x2
+t1 x3
+t2 x3 x5
+t2 x3 x7
+t1 x3
+t4 x2 x9 x1 x3
+t2 x2 x3
+t2 x2 x4
+t2 x2 x7
+t6 x3 x4 x5 x6 x7 x2
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t4 x9 x1 x2 x3
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t2 x8 x3
+t2 x3 x4
+t2 x3 x8
+t2 x7 x3
+t2 x5 x6
+t2 x5 x8
+t5 x3 x9 x1 x2 x5
+t2 x3 x4
+t2 x3 x7
+t3 x7 x8 x3
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t5 x4 x9 x1 x2 x3
+t2 x4 x7
+t2 x4 x8
+t2 x6 x4
+t2 x3 x5
+t2 x3 x7
+t2 x3 x8
+t3 x6 x7 x3
+t2 x3 x4
+t2 x3 x5
+t4 x6 x7 x8 x3
+t2 x6 x7
+t1 x9
+t5 x4 x9 x1 x2 x6
+t1 x9
+t2 x4 x5
+t2 x4 x7
+t2 x5 x4
+t2 x4 x5
+t3 x5 x8 x4
+t2 x3 x4
+t2 x3 x7
+t2 x3 x8
+t1 x9
+t5 x4 x9 x1 x2 x3
+t1 x9
+t2 x4 x6
+t2 x4 x8
+t3 x5 x7 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t1 x9
+t5 x4 x9 x1 x2 x3
+t1 x9
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t3 x5 x6 x4
+t2 x8 x7
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t4 x5 x6 x7 x3
+t2 x4 x6
+t2 x4 x8
+t5 x3 x9 x1 x2 x4
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t5 x5 x6 x7 x8 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x4 x3
+t2 x5 x6
+t2 x8 x5
+t2 x3 x8
+t3 x4 x7 x3
+t2 x3 x5
+t2 x3 x7
+t2 x3 x8
+t1 x9
+t6 x4 x6 x9 x1 x2 x3
+t1 x9
+t2 x6 x7
+t2 x6 x8
+t3 x7 x8 x6
+t1 x8
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t1 x4
+t5 x3 x9 x1 x2 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x7
+t2 x3 x8
+t4 x4 x6 x8 x3
+t1 x4
+t2 x4 x5
+t2 x4 x7
+t2 x4 x8
+t1 x4
+t1 x9
+t5 x3 x9 x1 x2 x4
+t1 x9
+t2 x3 x4
+t2 x3 x5
+t2 x3 x8
+t4 x4 x6 x7 x3
+t2 x3 x8
+t3 x4 x5 x3
+t1 x4
+t2 x4 x5
+t2 x4 x8
+t1 x4
+t5 x3 x9 x1 x2 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t4 x4 x5 x8 x3
+t1 x5
+t2 x5 x8
+t1 x5
+t1 x9
+t5 x3 x9 x1 x2 x5
+t1 x9
+t2 x3 x5
+t2 x3 x6
+t4 x4 x5 x7 x3
+t2 x3 x5
+t2 x3 x7
+t4 x4 x5 x6 x3
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t2 x4 x8
+t1 x4
+t5 x3 x9 x1 x2 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t2 x3 x8
+t5 x4 x5 x6 x8 x3
+t1 x8
+t2 x3 x5
+t6 x4 x5 x6 x7 x8 x3
+t2 x5 x8
+t5 x9 x1 x2 x3 x5
+t2 x7 x8
+t1 x7
+t2 x4 x6
+t2 x4 x7
+t2 x8 x4
+t2 x5 x6
+t2 x5 x7
+t2 x5 x8
+t2 x7 x5
+t1 x7
+t1 x7
+t1 x9
+t6 x4 x9 x1 x2 x3 x7
+t1 x9
+t2 x4 x5
+t2 x4 x7
+t3 x7 x8 x4
+t2 x4 x5
+t2 x6 x4
+t1 x6
+t2 x6 x8
+t1 x6
+t6 x4 x9 x1 x2 x3 x6
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t3 x6 x8 x4
+t1 x8
+t2 x5 x7
+t2 x5 x8
+t4 x6 x7 x8 x5
+t2 x4 x6
+t2 x4 x8
+t6 x5 x9 x1 x2 x3 x4
+t2 x6 x7
+t1 x6
+t2 x6 x7
+t2 x8 x6
+t2 x7 x6
+t2 x4 x5
+t2 x4 x6
+t2 x4 x8
+t4 x5 x7 x8 x4
+t2 x4 x5
+t2 x4 x8
+t3 x5 x6 x4
+t2 x8 x7
+t1 x5
+t2 x5 x7
+t1 x5
+t1 x9
+t6 x4 x9 x1 x2 x3 x5
+t1 x9
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x4 x8
+t4 x5 x6 x7 x4
+t6 x9 x1 x2 x3 x4 x8
+t2 x5 x6
+t2 x5 x7
+t2 x5 x8
+t1 x5
+t2 x5 x6
+t2 x8 x5
+t1 x7
+t1 x7
+t1 x9
+t7 x5 x9 x1 x2 x3 x4 x7
+t1 x9
+t2 x5 x6
+t2 x5 x7
+t2 x5 x8
+t2 x7 x5
+t1 x9
+t7 x6 x9 x1 x2 x3 x4 x7
+t1 x9
+t1 x8
+t2 x8 x7
+t2 x5 x7
+t2 x5 x8
+t3 x6 x7 x5
+t2 x5 x6
+t2 x5 x8
+t4 x6 x7 x8 x5
+t7 x9 x1 x2 x3 x4 x5 x7
+t2 x7 x8
+t1 x7
+t2 x6 x8
+t2 x8 x6
+t1 x7
+t1 x7
+t1 x9
+t8 x6 x9 x1 x2 x3 x4 x5 x7
+t1 x9
+t2 x6 x7
+t2 x6 x8
+t2 x7 x6
+t8 x9 x1 x2 x3 x4 x5 x6 x8
+t1 x8
+t1 x8
+t1 x4
+t2 x4 x8
+t1 x4
+t2 x4 x5
+t2 x7 x4
+t2 x3 x4
+t2 x3 x6
+t2 x3 x7
+t2 x6 x3
+t2 x5 x7
+t3 x6 x7 x5
+t1 x6
+t2 x3 x4
+t2 x3 x6
+t3 x5 x7 x3
+t2 x3 x6
+t2 x3 x7
+t3 x5 x6 x3
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t2 x2 x7
+t4 x5 x6 x7 x2
+t2 x2 x3
+t2 x4 x2
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t3 x4 x7 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t3 x4 x6 x1
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t4 x4 x6 x7 x1
+t2 x2 x6
+t3 x4 x5 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x6
+t4 x4 x5 x7 x1
+t2 x2 x3
+t4 x4 x5 x6 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t5 x4 x5 x6 x7 x1
+t2 x1 x2
+t2 x1 x4
+t2 x1 x7
+t2 x3 x1
+t2 x5 x6
+t2 x5 x7
+t2 x7 x5
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t3 x3 x6 x2
+t2 x1 x3
+t3 x2 x8 x1
+t2 x2 x6
+t2 x2 x7
+t4 x3 x6 x7 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t3 x2 x8 x1
+t2 x2 x4
+t2 x2 x6
+t3 x3 x5 x2
+t2 x2 x6
+t2 x2 x7
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x7
+t4 x3 x5 x7 x1
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t1 x3
+t3 x2 x8 x3
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t4 x3 x5 x6 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x2 x3
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t5 x3 x5 x6 x7 x2
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x7
+t1 x3
+t3 x1 x8 x3
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x7
+t3 x3 x4 x1
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t2 x2 x7
+t3 x1 x8 x2
+t2 x1 x6
+t4 x3 x4 x7 x1
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t3 x1 x8 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t4 x3 x4 x6 x1
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t3 x2 x8 x1
+t2 x2 x3
+t5 x3 x4 x6 x7 x2
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t4 x3 x4 x5 x1
+t2 x1 x3
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t5 x3 x4 x5 x7 x2
+t2 x2 x3
+t2 x2 x4
+t2 x2 x7
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t5 x3 x4 x5 x6 x1
+t1 x3
+t2 x3 x4
+t1 x3
+t3 x1 x8 x3
+t2 x1 x2
+t2 x1 x3
+t2 x1 x6
+t6 x3 x4 x5 x6 x7 x1
+t1 x1
+t1 x2
+t3 x1 x2 x8
+t1 x1
+t1 x2
+t2 x2 x3
+t2 x2 x7
+t2 x8 x2
+t2 x2 x7
+t1 x2
+t2 x2 x3
+t2 x7 x2
+t2 x2 x4
+t2 x6 x2
+t2 x1 x3
+t3 x6 x7 x1
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t3 x1 x8 x3
+t2 x1 x4
+t2 x1 x6
+t2 x1 x7
+t2 x5 x1
+t2 x2 x5
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x5
+t2 x1 x7
+t3 x5 x7 x1
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t3 x3 x8 x1
+t2 x3 x5
+t3 x5 x6 x3
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x4 x1
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t3 x4 x7 x3
+t1 x4
+t2 x4 x6
+t1 x4
+t1 x8
+t3 x1 x8 x4
+t1 x8
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t2 x1 x7
+t3 x4 x6 x1
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x7
+t3 x4 x5 x1
+t2 x1 x3
+t2 x1 x7
+t3 x2 x8 x1
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t4 x4 x5 x7 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t1 x8
+t3 x3 x8 x1
+t1 x8
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t4 x4 x5 x6 x3
+t2 x4 x6
+t1 x8
+t3 x3 x8 x4
+t1 x8
+t1 x5
+t2 x1 x3
+t2 x1 x5
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t3 x3 x7 x2
+t2 x1 x3
+t2 x1 x6
+t3 x2 x8 x1
+t2 x2 x3
+t2 x2 x4
+t2 x2 x7
+t3 x3 x6 x2
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x2 x3
+t3 x3 x5 x2
+t1 x3
+t2 x3 x4
+t2 x3 x7
+t1 x3
+t3 x2 x8 x3
+t2 x2 x3
+t2 x2 x6
+t2 x2 x7
+t4 x3 x5 x7 x2
+t2 x1 x2
+t2 x1 x5
+t2 x1 x6
+t1 x8
+t4 x3 x4 x8 x1
+t1 x8
+t2 x4 x6
+t2 x4 x7
+t3 x5 x6 x4
+t2 x1 x2
+t2 x1 x4
+t2 x1 x6
+t2 x1 x7
+t3 x3 x4 x1
+t2 x1 x3
+t2 x1 x5
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t4 x3 x4 x7 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x7
+t3 x2 x8 x1
+t2 x2 x6
+t4 x3 x4 x6 x2
+t3 x6 x7 x5
+t1 x5
+t2 x5 x6
+t2 x5 x7
+t1 x5
+t1 x8
+t3 x1 x8 x5
+t1 x8
+t2 x1 x2
+t2 x1 x5
+t2 x1 x6
+t4 x3 x4 x5 x1
+t1 x7
+t1 x7
+t3 x2 x8 x7
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t5 x3 x4 x5 x7 x2
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x7
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t5 x3 x4 x5 x6 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x7
+t1 x8
+t3 x2 x8 x1
+t1 x8
+t2 x4 x7
+t1 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x7
+t2 x7 x3
+t1 x2
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t1 x2
+t3 x1 x8 x2
+t2 x1 x2
+t2 x1 x6
+t2 x1 x7
+t3 x2 x6 x1
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t1 x8
+t4 x2 x4 x8 x1
+t1 x8
+t2 x4 x5
+t2 x4 x6
+t3 x6 x7 x4
+t2 x3 x4
+t2 x3 x7
+t1 x8
+t3 x1 x8 x3
+t1 x8
+t2 x1 x2
+t2 x1 x7
+t3 x2 x5 x1
+t2 x7 x6
+t2 x4 x6
+t3 x1 x8 x4
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t4 x2 x5 x6 x1
+t2 x4 x6
+t4 x2 x3 x8 x4
+t2 x3 x7
+t4 x5 x6 x7 x3
+t1 x2
+t2 x2 x3
+t2 x2 x6
+t2 x2 x7
+t1 x2
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x2
+t2 x1 x4
+t2 x1 x6
+t3 x2 x4 x1
+t2 x3 x4
+t2 x3 x7
+t3 x4 x7 x3
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t1 x8
+t4 x2 x3 x8 x1
+t1 x8
+t3 x4 x6 x3
+t3 x6 x7 x5
+t2 x1 x3
+t2 x1 x4
+t1 x8
+t4 x2 x3 x8 x1
+t1 x8
+t2 x3 x5
+t3 x4 x5 x3
+t2 x1 x4
+t2 x1 x5
+t1 x8
+t4 x2 x3 x8 x1
+t1 x8
+t2 x3 x4
+t2 x3 x6
+t2 x3 x7
+t4 x4 x5 x7 x3
+t2 x3 x4
+t2 x3 x6
+t4 x4 x5 x6 x3
+t2 x1 x2
+t2 x1 x4
+t2 x1 x6
+t1 x8
+t4 x2 x3 x8 x1
+t1 x8
+t2 x3 x4
+t2 x3 x7
+t5 x4 x5 x6 x7 x3
+t1 x2
+t2 x2 x4
+t2 x2 x5
+t1 x2
+t3 x1 x8 x2
+t2 x1 x2
+t2 x1 x6
+t3 x2 x3 x1
+t1 x3
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t1 x3
+t1 x8
+t3 x1 x8 x3
+t1 x8
+t2 x1 x3
+t2 x1 x5
+t2 x1 x7
+t4 x2 x3 x7 x1
+t2 x5 x6
+t1 x8
+t3 x1 x8 x5
+t1 x8
+t2 x1 x2
+t2 x1 x3
+t2 x1 x7
+t4 x2 x3 x6 x1
+t2 x4 x5
+t2 x4 x6
+t3 x6 x7 x4
+t1 x2
+t2 x2 x3
+t2 x2 x6
+t1 x2
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x2
+t2 x1 x6
+t4 x2 x3 x5 x1
+t1 x3
+t2 x3 x4
+t2 x3 x6
+t2 x3 x7
+t1 x3
+t1 x8
+t3 x1 x8 x3
+t1 x8
+t2 x1 x3
+t2 x1 x4
+t2 x1 x7
+t5 x2 x3 x5 x7 x1
+t2 x1 x3
+t2 x1 x5
+t2 x1 x7
+t5 x2 x3 x5 x6 x1
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t2 x1 x7
+t1 x8
+t5 x2 x3 x4 x8 x1
+t1 x8
+t2 x4 x5
+t4 x5 x6 x7 x4
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t1 x4
+t1 x8
+t3 x1 x8 x4
+t1 x8
+t2 x1 x2
+t2 x1 x4
+t2 x1 x7
+t4 x2 x3 x4 x1
+t2 x1 x2
+t2 x1 x6
+t5 x2 x3 x4 x7 x1
+t1 x6
+t2 x6 x7
+t1 x6
+t3 x1 x8 x6
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t5 x2 x3 x4 x6 x1
+t1 x2
+t2 x2 x3
+t2 x2 x4
+t1 x2
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x7
+t6 x2 x3 x4 x6 x7 x1
+t1 x2
+t2 x2 x4
+t1 x2
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t5 x2 x3 x4 x5 x1
+t1 x3
+t2 x3 x4
+t2 x3 x7
+t1 x3
+t1 x8
+t3 x1 x8 x3
+t1 x8
+t2 x1 x2
+t2 x1 x3
+t2 x1 x6
+t2 x1 x7
+t6 x2 x3 x4 x5 x7 x1
+t1 x3
+t2 x3 x7
+t1 x3
+t3 x1 x8 x3
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t2 x1 x7
+t6 x2 x3 x4 x5 x6 x1
+t1 x2
+t2 x2 x3
+t2 x2 x6
+t2 x2 x7
+t1 x2
+t1 x8
+t3 x1 x8 x2
+t1 x8
+t2 x1 x2
+t2 x1 x3
+t2 x1 x7
+t7 x2 x3 x4 x5 x6 x7 x1
+t2 x3 x4
+t3 x8 x1 x3
+t2 x2 x7
+t1 x2
+t2 x2 x5
+t2 x2 x7
+t2 x7 x2
+t2 x2 x6
+t2 x2 x7
+t2 x6 x2
+t2 x5 x6
+t3 x6 x7 x5
+t2 x3 x7
+t1 x8
+t4 x2 x8 x1 x3
+t1 x8
+t2 x5 x2
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x7
+t4 x4 x8 x1 x2
+t2 x4 x6
+t3 x5 x7 x4
+t2 x4 x5
+t2 x4 x7
+t1 x8
+t4 x2 x8 x1 x4
+t1 x8
+t2 x2 x5
+t2 x2 x6
+t3 x5 x6 x2
+t2 x3 x4
+t2 x3 x7
+t1 x8
+t4 x2 x8 x1 x3
+t1 x8
+t2 x2 x6
+t2 x4 x2
+t2 x5 x6
+t2 x7 x5
+t2 x6 x5
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t1 x4
+t1 x8
+t4 x3 x8 x1 x4
+t1 x8
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t4 x4 x6 x7 x3
+t2 x2 x6
+t2 x2 x7
+t3 x4 x5 x2
+t1 x4
+t2 x4 x7
+t1 x4
+t4 x2 x8 x1 x4
+t2 x2 x3
+t2 x2 x4
+t2 x2 x7
+t4 x4 x5 x7 x2
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t1 x8
+t4 x3 x8 x1 x2
+t1 x8
+t2 x3 x6
+t2 x3 x7
+t4 x4 x5 x6 x3
+t2 x2 x4
+t2 x2 x6
+t2 x2 x7
+t1 x8
+t4 x3 x8 x1 x2
+t1 x8
+t2 x5 x7
+t1 x5
+t2 x5 x7
+t2 x7 x5
+t2 x6 x4
+t2 x4 x6
+t3 x6 x7 x4
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t3 x3 x5 x2
+t2 x2 x3
+t2 x2 x6
+t5 x3 x4 x8 x1 x2
+t2 x4 x6
+t2 x4 x7
+t3 x5 x7 x4
+t1 x3
+t2 x3 x6
+t1 x3
+t1 x8
+t4 x2 x8 x1 x3
+t1 x8
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t4 x3 x5 x6 x2
+t2 x2 x3
+t2 x2 x5
+t3 x3 x4 x2
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t1 x4
+t1 x8
+t4 x2 x8 x1 x4
+t1 x8
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t4 x3 x4 x7 x2
+t1 x6
+t1 x6
+t1 x8
+t4 x2 x8 x1 x6
+t1 x8
+t2 x2 x5
+t2 x2 x6
+t2 x2 x7
+t4 x3 x4 x6 x2
+t2 x2 x3
+t2 x2 x5
+t2 x2 x7
+t4 x3 x4 x5 x2
+t1 x3
+t2 x3 x5
+t2 x3 x6
+t1 x3
+t1 x8
+t4 x2 x8 x1 x3
+t1 x8
+t2 x2 x3
+t2 x2 x6
+t5 x3 x4 x5 x7 x2
+t1 x3
+t2 x3 x4
+t2 x3 x6
+t1 x3
+t4 x2 x8 x1 x3
+t2 x2 x3
+t5 x3 x4 x5 x6 x2
+t2 x3 x4
+t2 x3 x5
+t4 x8 x2 x1 x3
+t2 x3 x5
+t1 x3
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x7 x4
+t1 x7
+t2 x3 x4
+t2 x3 x6
+t2 x3 x7
+t5 x4 x8 x2 x1 x3
+t2 x4 x6
+t2 x4 x7
+t3 x6 x7 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x7
+t1 x8
+t5 x4 x8 x2 x1 x3
+t1 x8
+t2 x4 x5
+t2 x4 x6
+t2 x4 x7
+t2 x5 x4
+t2 x7 x6
+t2 x3 x4
+t6 x5 x6 x8 x2 x1 x3
+t1 x7
+t2 x3 x4
+t2 x3 x5
+t2 x4 x3
+t2 x5 x6
+t2 x7 x5
+t1 x4
+t2 x4 x6
+t2 x4 x7
+t1 x4
+t1 x8
+t5 x3 x8 x2 x1 x4
+t1 x8
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x3 x7
+t3 x4 x6 x3
+t2 x3 x4
+t2 x3 x6
+t6 x4 x5 x8 x2 x1 x3
+t1 x6
+t2 x7 x6
+t2 x3 x5
+t2 x3 x6
+t4 x4 x5 x6 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t5 x4 x5 x6 x7 x3
+t2 x4 x6
+t5 x8 x2 x3 x1 x4
+t2 x5 x7
+t1 x5
+t2 x4 x5
+t2 x4 x6
+t2 x7 x4
+t6 x4 x8 x2 x3 x1 x7
+t2 x4 x5
+t2 x6 x4
+t2 x4 x6
+t2 x4 x7
+t6 x5 x8 x2 x3 x1 x4
+t1 x6
+t2 x7 x6
+t7 x5 x6 x8 x2 x3 x1 x7
+t2 x5 x6
+t2 x5 x7
+t6 x8 x2 x3 x4 x1 x5
+t2 x6 x7
+t2 x7 x6
+t2 x6 x5
+t1 x6
+t1 x6
+t7 x5 x8 x2 x3 x4 x1 x6
+t2 x5 x6
+t2 x5 x7
+t3 x6 x7 x5
+t2 x6 x7
+t7 x8 x2 x3 x4 x5 x1 x6
+t2 x7 x6
+t1 x7
+t2 x1 x8
+t1 x1
+t2 x1 x7
+t1 x1
+t1 x3
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x6 x2
+t2 x3 x4
+t2 x3 x6
+t2 x5 x3
+t2 x1 x3
+t2 x1 x5
+t3 x5 x6 x1
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t2 x4 x1
+t2 x2 x5
+t3 x4 x6 x2
+t2 x2 x3
+t2 x2 x6
+t3 x4 x5 x2
+t2 x1 x2
+t1 x7
+t3 x2 x7 x1
+t1 x7
+t2 x2 x6
+t4 x4 x5 x6 x2
+t2 x2 x4
+t2 x2 x5
+t1 x7
+t3 x1 x7 x2
+t1 x7
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x3 x1
+t1 x3
+t2 x3 x4
+t2 x3 x6
+t1 x3
+t1 x7
+t3 x1 x7 x3
+t1 x7
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t3 x3 x6 x1
+t2 x1 x4
+t2 x1 x5
+t1 x7
+t3 x2 x7 x1
+t1 x7
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t3 x3 x5 x2
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t1 x7
+t3 x2 x7 x1
+t1 x7
+t2 x2 x4
+t2 x2 x6
+t4 x3 x5 x6 x2
+t1 x7
+t3 x1 x7 x5
+t1 x7
+t2 x1 x4
+t2 x1 x6
+t3 x3 x4 x1
+t2 x1 x4
+t2 x1 x6
+t3 x2 x7 x1
+t2 x2 x3
+t2 x2 x5
+t2 x2 x6
+t4 x3 x4 x6 x2
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t3 x2 x7 x1
+t2 x2 x4
+t2 x2 x5
+t4 x3 x4 x5 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t3 x2 x7 x1
+t2 x2 x4
+t5 x3 x4 x5 x6 x2
+t1 x1
+t1 x2
+t3 x1 x2 x7
+t1 x1
+t1 x2
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t2 x7 x2
+t2 x2 x5
+t1 x2
+t2 x2 x3
+t2 x6 x2
+t2 x4 x6
+t1 x7
+t3 x1 x7 x4
+t1 x7
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t2 x5 x1
+t2 x3 x4
+t3 x5 x6 x3
+t1 x4
+t2 x4 x5
+t2 x4 x6
+t1 x4
+t3 x1 x7 x4
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x4 x1
+t2 x2 x3
+t2 x2 x4
+t1 x7
+t3 x3 x7 x2
+t1 x7
+t2 x3 x4
+t2 x3 x6
+t3 x4 x6 x3
+t2 x3 x6
+t1 x7
+t3 x1 x7 x3
+t1 x7
+t2 x1 x6
+t3 x4 x5 x1
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t1 x3
+t3 x1 x7 x3
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t2 x3 x1
+t2 x2 x4
+t2 x2 x5
+t3 x3 x6 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t3 x3 x5 x1
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t1 x7
+t3 x2 x7 x1
+t1 x7
+t2 x2 x5
+t4 x3 x5 x6 x2
+t2 x1 x2
+t2 x1 x5
+t3 x2 x7 x1
+t2 x2 x6
+t3 x3 x4 x2
+t2 x1 x3
+t2 x1 x6
+t3 x2 x7 x1
+t2 x2 x3
+t2 x2 x6
+t4 x3 x4 x5 x2
+t1 x3
+t2 x3 x4
+t1 x3
+t3 x1 x7 x3
+t2 x1 x3
+t2 x1 x5
+t5 x3 x4 x5 x6 x1
+t1 x2
+t2 x2 x4
+t1 x2
+t1 x7
+t3 x1 x7 x2
+t1 x7
+t2 x1 x2
+t2 x1 x4
+t2 x1 x6
+t2 x2 x1
+t3 x1 x7 x5
+t2 x1 x4
+t2 x1 x6
+t3 x2 x6 x1
+t2 x3 x5
+t2 x3 x6
+t3 x1 x7 x3
+t2 x1 x6
+t3 x2 x5 x1
+t2 x3 x5
+t3 x5 x6 x3
+t1 x2
+t2 x2 x4
+t2 x2 x6
+t1 x2
+t3 x1 x7 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x6
+t3 x2 x4 x1
+t1 x6
+t1 x6
+t1 x7
+t3 x1 x7 x6
+t1 x7
+t2 x1 x2
+t2 x1 x3
+t2 x1 x6
+t4 x2 x4 x6 x1
+t2 x1 x2
+t2 x1 x5
+t2 x1 x6
+t4 x2 x4 x5 x1
+t1 x2
+t2 x2 x3
+t2 x2 x5
+t1 x2
+t1 x7
+t3 x1 x7 x2
+t1 x7
+t2 x1 x2
+t2 x1 x5
+t5 x2 x4 x5 x6 x1
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t1 x3
+t1 x7
+t3 x1 x7 x3
+t1 x7
+t2 x1 x3
+t2 x1 x5
+t3 x2 x3 x1
+t1 x3
+t2 x3 x5
+t2 x3 x6
+t1 x3
+t1 x7
+t3 x1 x7 x3
+t1 x7
+t2 x1 x2
+t2 x1 x3
+t4 x2 x3 x6 x1
+t2 x4 x5
+t1 x7
+t3 x1 x7 x4
+t1 x7
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x1 x6
+t4 x2 x3 x5 x1
+t1 x5
+t1 x5
+t3 x1 x7 x5
+t2 x1 x2
+t2 x1 x5
+t2 x1 x6
+t5 x2 x3 x5 x6 x1
+t1 x2
+t2 x2 x3
+t2 x2 x5
+t1 x2
+t3 x1 x7 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t4 x2 x3 x4 x1
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t1 x3
+t3 x1 x7 x3
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x1 x6
+t5 x2 x3 x4 x6 x1
+t1 x2
+t2 x2 x4
+t1 x2
+t1 x7
+t3 x1 x7 x2
+t1 x7
+t2 x1 x2
+t5 x2 x3 x4 x5 x1
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t1 x3
+t3 x1 x7 x3
+t2 x1 x3
+t2 x1 x4
+t2 x1 x6
+t6 x2 x3 x4 x5 x6 x1
+t2 x2 x5
+t2 x2 x6
+t3 x7 x1 x2
+t2 x2 x3
+t2 x2 x5
+t2 x2 x6
+t1 x2
+t2 x2 x4
+t2 x2 x6
+t2 x6 x2
+t2 x3 x4
+t2 x3 x5
+t2 x5 x3
+t2 x2 x4
+t2 x2 x6
+t3 x5 x6 x2
+t2 x3 x5
+t2 x3 x6
+t4 x4 x7 x1 x3
+t1 x5
+t2 x2 x3
+t2 x2 x4
+t2 x2 x6
+t1 x7
+t4 x3 x7 x1 x2
+t1 x7
+t3 x4 x6 x3
+t2 x3 x4
+t2 x3 x6
+t4 x2 x7 x1 x3
+t2 x2 x4
+t2 x2 x5
+t3 x4 x5 x2
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t1 x7
+t4 x3 x7 x1 x2
+t1 x7
+t1 x4
+t2 x6 x5
+t2 x5 x4
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t1 x3
+t1 x7
+t4 x2 x7 x1 x3
+t1 x7
+t2 x2 x3
+t2 x2 x5
+t2 x2 x6
+t4 x3 x5 x6 x2
+t2 x2 x4
+t3 x3 x4 x2
+t2 x5 x6
+t1 x7
+t4 x2 x7 x1 x5
+t1 x7
+t2 x2 x6
+t4 x3 x4 x6 x2
+t2 x2 x4
+t2 x2 x5
+t2 x2 x6
+t4 x3 x4 x5 x2
+t2 x4 x5
+t4 x7 x2 x1 x4
+t2 x3 x4
+t1 x3
+t2 x4 x5
+t2 x4 x6
+t2 x6 x4
+t2 x4 x6
+t2 x5 x4
+t2 x3 x5
+t1 x7
+t5 x4 x7 x2 x1 x3
+t1 x7
+t2 x4 x5
+t3 x5 x6 x4
+t2 x3 x4
+t2 x3 x5
+t2 x3 x6
+t2 x4 x3
+t2 x5 x6
+t5 x3 x7 x2 x1 x5
+t2 x3 x4
+t3 x4 x6 x3
+t2 x3 x4
+t2 x3 x5
+t3 x4 x5 x3
+t2 x4 x5
+t2 x4 x6
+t5 x7 x2 x3 x1 x4
+t2 x4 x5
+t2 x4 x6
+t2 x6 x4
+t1 x6
+t2 x4 x5
+t3 x5 x6 x4
+t6 x7 x2 x3 x4 x1 x6
+t1 x5
+t2 x5 x6
+t2 x6 x5
+t7 x7 x2 x3 x4 x5 x1 x6
+t1 x6
+t2 x1 x7
+t2 x3 x4
+t1 x3
+t2 x4 x2
+t2 x2 x4
+t3 x4 x5 x2
+t2 x1 x5
+t2 x3 x1
+t2 x1 x3
+t3 x3 x5 x1
+t3 x2 x6 x5
+t2 x2 x3
+t2 x2 x4
+t3 x3 x4 x2
+t2 x2 x3
+t2 x2 x4
+t1 x6
+t3 x1 x6 x2
+t1 x6
+t2 x1 x3
+t2 x1 x4
+t4 x3 x4 x5 x1
+t1 x1
+t1 x2
+t3 x1 x2 x6
+t1 x1
+t1 x2
+t2 x6 x3
+t2 x2 x5
+t1 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x5
+t2 x5 x1
+t2 x3 x4
+t2 x3 x5
+t2 x4 x3
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t1 x6
+t3 x3 x6 x2
+t1 x6
+t2 x3 x4
+t2 x3 x5
+t3 x4 x5 x3
+t2 x1 x4
+t2 x1 x5
+t1 x6
+t3 x3 x6 x1
+t1 x6
+t2 x4 x5
+t1 x4
+t2 x1 x2
+t2 x1 x4
+t2 x1 x5
+t3 x3 x5 x1
+t2 x2 x3
+t2 x2 x4
+t2 x2 x5
+t1 x6
+t3 x1 x6 x2
+t1 x6
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t3 x3 x4 x1
+t2 x1 x5
+t1 x6
+t3 x2 x6 x1
+t1 x6
+t4 x3 x4 x5 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t2 x1 x5
+t2 x2 x1
+t1 x2
+t2 x2 x3
+t2 x2 x4
+t1 x2
+t3 x1 x6 x2
+t2 x1 x2
+t2 x1 x3
+t3 x2 x5 x1
+t1 x2
+t2 x2 x3
+t2 x2 x4
+t1 x2
+t1 x6
+t3 x1 x6 x2
+t1 x6
+t2 x1 x2
+t2 x1 x5
+t3 x2 x4 x1
+t2 x1 x2
+t4 x2 x3 x6 x1
+t2 x3 x4
+t2 x3 x5
+t3 x4 x5 x3
+t1 x2
+t2 x2 x3
+t2 x2 x5
+t1 x2
+t3 x1 x6 x2
+t2 x1 x2
+t2 x1 x4
+t3 x2 x3 x1
+t1 x3
+t1 x3
+t1 x6
+t3 x1 x6 x3
+t1 x6
+t2 x1 x3
+t4 x2 x3 x5 x1
+t1 x3
+t2 x3 x4
+t1 x3
+t3 x1 x6 x3
+t2 x1 x3
+t2 x1 x5
+t4 x2 x3 x4 x1
+t1 x2
+t2 x2 x3
+t1 x2
+t1 x6
+t3 x1 x6 x2
+t1 x6
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t5 x2 x3 x4 x5 x1
+t2 x3 x4
+t3 x6 x1 x3
+t1 x5
+t2 x3 x4
+t2 x3 x5
+t1 x6
+t4 x2 x6 x1 x3
+t1 x6
+t3 x4 x5 x2
+t2 x3 x2
+t2 x4 x5
+t1 x6
+t4 x2 x6 x1 x4
+t1 x6
+t2 x2 x5
+t3 x3 x5 x2
+t1 x3
+t2 x3 x4
+t2 x3 x5
+t1 x3
+t1 x6
+t4 x2 x6 x1 x3
+t1 x6
+t2 x2 x3
+t3 x3 x4 x2
+t4 x6 x2 x1 x4
+t1 x4
+t2 x4 x5
+t2 x5 x4
+t2 x3 x4
+t5 x4 x6 x2 x1 x3
+t5 x6 x2 x3 x1 x4
+t2 x4 x5
+t1 x4
+t2 x4 x5
+t2 x5 x4
+t6 x6 x2 x3 x4 x1 x5
+t2 x1 x6
+t1 x1
+t2 x1 x5
+t1 x1
+t2 x2 x3
+t2 x4 x2
+t1 x5
+t3 x2 x5 x1
+t1 x5
+t2 x2 x3
+t2 x2 x4
+t2 x3 x2
+t2 x1 x2
+t2 x1 x4
+t3 x2 x5 x1
+t2 x2 x4
+t3 x3 x4 x2
+t1 x1
+t1 x2
+t3 x1 x2 x5
+t1 x1
+t1 x2
+t2 x5 x1
+t2 x1 x2
+t1 x1
+t2 x1 x4
+t2 x4 x1
+t2 x1 x2
+t3 x2 x5 x1
+t2 x2 x3
+t2 x3 x2
+t1 x3
+t1 x3
+t1 x5
+t3 x1 x5 x3
+t1 x5
+t2 x1 x2
+t2 x1 x3
+t3 x3 x4 x1
+t1 x2
+t2 x2 x4
+t1 x2
+t3 x1 x5 x2
+t2 x1 x2
+t2 x1 x4
+t2 x2 x1
+t2 x1 x2
+t2 x1 x3
+t3 x2 x4 x1
+t1 x2
+t1 x2
+t3 x1 x5 x2
+t2 x1 x2
+t2 x1 x3
+t2 x1 x4
+t3 x2 x3 x1
+t2 x1 x4
+t5 x2 x3 x4 x5 x1
+t2 x3 x4
+t3 x5 x1 x3
+t2 x2 x4
+t2 x4 x2
+t1 x3
+t1 x3
+t4 x2 x5 x1 x3
+t2 x2 x3
+t2 x3 x2
+t2 x2 x3
+t2 x2 x4
+t3 x3 x4 x2
+t4 x5 x2 x1 x3
+t2 x4 x3
+t2 x1 x5
+t2 x1 x3
+t1 x1
+t2 x1 x3
+t1 x4
+t3 x2 x4 x1
+t1 x4
+t2 x2 x3
+t2 x3 x2
+t1 x1
+t1 x2
+t3 x1 x2 x4
+t1 x1
+t1 x2
+t2 x4 x2
+t2 x1 x2
+t2 x1 x3
+t1 x1
+t2 x1 x2
+t2 x3 x1
+t2 x1 x3
+t1 x4
+t3 x2 x4 x1
+t1 x4
+t1 x3
+t2 x1 x3
+t1 x4
+t4 x2 x3 x4 x1
+t1 x4
+t3 x4 x1 x2
+t4 x3 x4 x1 x2
+t4 x4 x2 x1 x3
+t2 x1 x4
+t2 x1 x2
+t1 x1
+t1 x1
+t1 x2
+t3 x1 x2 x3
+t1 x1
+t1 x2
+t2 x1 x2
+t2 x3 x1
+t1 x2
+t2 x1 x2
+t2 x2 x1
+t2 x1 x3
+.end
