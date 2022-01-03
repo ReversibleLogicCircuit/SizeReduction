@@ -1,5 +1,5 @@
 ## Results for other structured functions with various d_j 
-# Hidden weight bit functions seem to have polynomial cost circuit(https://arxiv.org/abs/2007.05469)
+### Hidden weight bit functions seem to have polynomial cost circuit(https://arxiv.org/abs/2007.05469)
 Each entry reads (QC,#TOF)  
 
 |  Functions |      d=0      |      d=1      |      d=2      |      d=3      |      d=4      |      d=5      |..., d_i = ,... |
