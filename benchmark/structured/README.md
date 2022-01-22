@@ -2,4 +2,4 @@
 
 Following functions are considered.
 - Hidden weighted bit function (HWB)
-- Hamming weight function
+- Hamming coding function
