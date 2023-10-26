@@ -1,0 +1,127 @@
+.version 2.0
+.numvars 5
+.variables x1 x2 x3 x4 x5
+.inputs i1 i2 i3 i4 i5
+.outputs o1 o2 o3 o4 o5
+.constants -----
+.garbage -----
+.begin
+t1 x2
+t2 x2 x5
+t1 x2
+t2 x3 x4
+t1 x3
+t2 x1 x3
+t2 x1 x4
+t2 x4 x1
+t2 x2 x3
+t2 x2 x4
+t2 x3 x2
+t3 x2 x5 x1
+t2 x2 x3
+t2 x2 x4
+t3 x3 x4 x2
+t1 x1
+t1 x2
+t3 x1 x2 x5
+t1 x1
+t1 x2
+t2 x1 x2
+t2 x1 x4
+t2 x5 x1
+t2 x1 x2
+t2 x1 x4
+t1 x1
+t2 x4 x2
+t2 x2 x4
+t3 x1 x5 x2
+t2 x3 x1
+t2 x1 x2
+t2 x1 x4
+t1 x5
+t3 x2 x5 x1
+t1 x5
+t2 x2 x3
+t2 x2 x4
+t3 x3 x4 x2
+t1 x4
+t2 x1 x2
+t4 x2 x3 x5 x1
+t2 x3 x4
+t2 x4 x3
+t1 x2
+t2 x2 x3
+t2 x2 x4
+t1 x2
+t1 x5
+t3 x1 x5 x2
+t1 x5
+t2 x1 x2
+t2 x1 x4
+t3 x2 x3 x1
+t2 x2 x3
+t2 x2 x4
+t3 x5 x1 x2
+t2 x2 x3
+t2 x4 x2
+t1 x3
+t1 x3
+t4 x2 x5 x1 x3
+t2 x2 x3
+t2 x2 x4
+t2 x3 x2
+t2 x2 x3
+t2 x2 x4
+t3 x3 x4 x2
+t4 x5 x2 x1 x3
+t1 x3
+t2 x1 x5
+t2 x1 x2
+t2 x1 x3
+t1 x1
+t2 x1 x3
+t1 x4
+t3 x3 x4 x1
+t1 x4
+t1 x1
+t1 x2
+t3 x1 x2 x4
+t1 x1
+t1 x2
+t2 x2 x3
+t2 x4 x2
+t2 x1 x3
+t1 x1
+t2 x3 x1
+t2 x1 x2
+t3 x2 x4 x1
+t1 x3
+t2 x1 x3
+t4 x2 x3 x4 x1
+t2 x2 x3
+t3 x4 x1 x2
+t1 x2
+t2 x3 x2
+t4 x4 x2 x1 x3
+t2 x1 x4
+t2 x1 x2
+t2 x3 x1
+t2 x1 x2
+t1 x1
+t1 x1
+t1 x2
+t3 x1 x2 x3
+t1 x1
+t1 x2
+t2 x1 x2
+t2 x3 x1
+t1 x1
+t2 x2 x1
+t3 x3 x1 x2
+t2 x1 x3
+t2 x1 x2
+t2 x2 x1
+t1 x1
+t2 x1 x2
+t1 x1
+.end
