@@ -17,6 +17,11 @@ URF5 is somewhat structured; all row numbers are at normal positions. To utilize
 
 Some nthPrimes have small number of interrupting positions. To utilize it, we have used
 ```
+/benchmark$ python ./synthesis.py ./nthPrime3.sbox
+/benchmark$ python ./synthesis.py ./nthPrime4.sbox
+/benchmark$ python ./synthesis.py ./nthPrime5.sbox
+/benchmark$ python ./synthesis.py ./nthPrime6.sbox
+/benchmark$ python ./synthesis.py ./nthPrime7.sbox
 /benchmark$ python ./synthesis_nthPrime.py ./nthPrime8.sbox
 /benchmark$ python ./synthesis_nthPrime.py ./nthPrime9.sbox
 /benchmark$ python ./synthesis_nthPrime.py ./nthPrime10.sbox
@@ -34,10 +39,10 @@ Each entry reads (QC,#TOF)
 |    URF3    | 47161, 6945   | 34845, 5145   | 33541, 4898   | 30697, 4498   |       -       |       -       |        -                     |
 |    URF4    | 108493, 16435 | 81748, 12516  | 77616, 11706  |       -       |       -       |       -       |        -                     |
 |    URF5    | 17787, 2555   | 11968, 1527   | 9863, 1366    | 8735, 1309    |       -       |       -       |        -                     |
-| nthprime3  |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
-| nthprime4  |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
-| nthprime5  |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
-| nthprime6  |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
+| nthprime3  | 23, 1         | 23, 1         | 23, 1         | 23, 1         | 23, 1         | 23, 1         |                              |
+| nthprime4  | 81, 8         | 80, 8         | 80, 8         | 80, 8         | 80, 8         | 80, 8         |                              |
+| nthprime5  | 269, 35       | 253, 31       | 253, 31       | 282, 35       | 238, 31       | 238, 31       |                              |
+| nthprime6  | 880, 126      | 687, 97       | 716, 102      | 692, 102      | 673, 90       | 712, 97       |                              |
 | nthprime7  | 2461, 382     | 1984, 292     | 1887, 281     | 1772, 258     | 1827, 259     | 1759, 252     |        -                     |
 | nthprime8  | 6793, 970     | 5333, 726     | 5165, 691     | 5017, 668     | 4751, 627     |       -       |        -                     |
 | nthprime9  | 18043, 2673   | 13203, 1935   | 12189, 1762   | 11512, 1653   |       -       |       -       |        -                     |
