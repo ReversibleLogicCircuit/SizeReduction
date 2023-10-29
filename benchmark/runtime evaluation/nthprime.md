@@ -18,8 +18,4 @@ Each entry reads (time(s)  )
 | nthprime15 |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
 | nthprime16 |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
 
-<object data="runtime_nthPrime.pdf.pdf" type="application/pdf" width="700px" height="700px">
-    <embed src="runtime_nthPrime.pdf.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="runtime_nthPrime.pdf.pdf">Download PDF</a>.</p>
-    </embed>
-</object>
+<embed src="./runtime_nthPrime.pdf.pdf" type="application/pdf">
