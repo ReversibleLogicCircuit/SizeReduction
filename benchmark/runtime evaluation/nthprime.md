@@ -18,4 +18,4 @@ Each entry reads (time(s)  )
 | nthprime15 |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
 | nthprime16 |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
 
-![hustlin_erd](runtime_nthPrime.pdf)
+xfun::embed_file("runtime_nthPrime.pdf")
