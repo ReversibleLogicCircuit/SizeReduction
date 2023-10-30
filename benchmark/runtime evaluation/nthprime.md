@@ -21,6 +21,8 @@ Each entry reads (time(s)  )
 <iframe width="100%" height="800" src="./runtime_nthPrime.pdf"/>
   
 <iframe src="./runtime_nthPrime.pdf" width="100%" height="500" frameborder="0" />
+
+<iframe src="runtime_nthPrime.pdf" width="100%" height="500" frameborder="0" />
   
 xfun::embed_file("./runtime_nthPrime.pdf")
 
