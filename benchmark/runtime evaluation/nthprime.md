@@ -22,3 +22,5 @@ Each entry reads (time(s)  )
 
 <object data="./runtime_nthPrime.pdf" type="application/pdf" width=100%>
 </object>
+
+<iframe width="100%" height="800" src="./runtime_nthPrime.pdf">
