@@ -25,3 +25,9 @@ Each entry reads (time(s)  )
 xfun::embed_file("./runtime_nthPrime.pdf")
 
 \includepdf{./runtime_nthPrime.pdf}
+
+<object data="./runtime_nthPrime.pdf.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="./runtime_nthPrime.pdf.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="http://yoursite.com/the.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
