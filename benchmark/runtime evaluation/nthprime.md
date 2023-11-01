@@ -18,4 +18,5 @@ Each entry reads (time)
 | nthprime15 |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
 | nthprime16 |       -       |       -       |       -       |       -       |       -       |       -       |      TBA                     |
 
+## Runtime Results Graph with d=0,1,2 and nthPrime6 to nthPrime11
 <img src="./runtime_nthPrime.png" width="60%"/>
