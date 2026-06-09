@@ -19,6 +19,8 @@ OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function
 ```
 
 Here, `OMP_NUM_THREADS` specifies the number of OpenMP threads to be used during execution.
+Note that the current implementation supports only permutation matrices with bit length at most 16.
+
 
 ## Example Commands
 
