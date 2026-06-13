@@ -15,7 +15,7 @@ gcc -fopenmp -O3 -std=c11 -o qube unit_opers.c leaf_utils.c block_ops.c exhausti
 Then, run the executable with an input file as follows:
 
 ```bash
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function
+OMP_NUM_THREADS=8 ./qube ../example/example.function
 ```
 
 Here, `OMP_NUM_THREADS` specifies the number of OpenMP threads to be used during execution.
@@ -27,17 +27,17 @@ Note that the current implementation supports only permutation matrices with bit
 For a given input file, the default command is:
 
 ```bash
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function
+OMP_NUM_THREADS=8 ./qube ../example/example.function
 ```
 
 To specify the search depth `d_j` for the depth-`d_j` exhaustive search at each reduction step, additional arguments may be provided:
 
 ```bash
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function d_{n-1} d_{n-2} d_{n-3} ...
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function 1
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function 0 2
-OMP_NUM_THREADS=8 ./qube ../SizeReduction-main/example/example.function 1 2 2 3
+OMP_NUM_THREADS=8 ./qube ../example/example.function d_{n-1} d_{n-2} d_{n-3} ...
+OMP_NUM_THREADS=8 ./qube ../example/example.function
+OMP_NUM_THREADS=8 ./qube ../example/example.function 1
+OMP_NUM_THREADS=8 ./qube ../example/example.function 0 2
+OMP_NUM_THREADS=8 ./qube ../example/example.function 1 2 2 3
 ```
 
 The second command uses the default setting, namely `d_j = 0` for all `j`.
