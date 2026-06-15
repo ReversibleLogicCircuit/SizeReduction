@@ -56,12 +56,12 @@ After the program terminates, an output file named `example_out.real` is generat
 
 ## Screen Output
 
-During execution, the program displays information similar to the following:
+After execution, the program displays information similar to the following:
 ```text
-Target file     : ../SizeReduction-main/example/example.function
+Target file     : ../example/example.function
 # of bits       : 6
 # of gates      : 264
 # of Toffoli    : 123
-output          : ../SizeReduction-main/example/example_out.real
+output          : ../example/example_out.real
 verified        : identity OK
 ```
